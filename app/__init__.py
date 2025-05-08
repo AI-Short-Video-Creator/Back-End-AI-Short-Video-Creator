@@ -1,7 +1,7 @@
 import logging
 from flask_cors import CORS
 from flask import Flask
-from app.extentions import bcrypt, jwt
+from app.extentions import bcrypt, jwt, mongo
 from app.config import Config
 
 # Set up logging
@@ -20,6 +20,7 @@ def create_app():
     # Initialize extensions
     bcrypt.init_app(app)
     jwt.init_app(app)
+    mongo.init_app(app)
 
     # Register blueprints
     register_blueprints(app)
