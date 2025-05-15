@@ -7,3 +7,5 @@ __pycache__/
 *.pyo
 
 .env
+.env.*
+.env.staging
