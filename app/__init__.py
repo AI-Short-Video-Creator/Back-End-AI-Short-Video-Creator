@@ -56,9 +56,11 @@ def register_blueprints(app):
         app: Flask application instance
     """
     from app.sample_bp.route import sample_bp
+    from app.trending_bp.route import trending_bp
 
     blue_prints = [
-        (sample_bp, '/api/sample')
+        (sample_bp, '/api/sample'),
+        (trending_bp, '/api/trending')
     ]
 
     for blueprint, url_prefix in blue_prints:
