@@ -6,4 +6,7 @@ __pycache__/
 *.pyc
 *.pyo
 
-.env
+.env.dev
+
+generated_videos/
+sample_data/
