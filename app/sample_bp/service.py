@@ -1,3 +1,5 @@
+from app.extentions import mongo
+
 class SampleService:
     _instance = None
 
@@ -7,4 +9,8 @@ class SampleService:
         return cls._instance
     
     def sample(self):
-        return "Sample data from SampleService"
+        data = mongo.db.collection_name.find_one({"key": "value"})
+        if data:
+            return {"status": "success", "data": data}
+        else:
+            return {"status": "error", "message": "No data found"}
