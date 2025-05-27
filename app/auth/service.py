@@ -90,7 +90,7 @@ class UserService:
 
         return user_data, token
 
-    def register(self, user_register_dto: UserRegisterDTO) -> str:
+    def register(self, user_register_dto: UserRegisterDTO) -> Tuple[dict, str]:
         """
         Register a new user.
         
@@ -98,7 +98,7 @@ class UserService:
             user_register_dto (UserRegisterDTO): The registration details of the user.
         
         Returns:
-            str: The ID of the newly registered user.
+            Tuple[dict, str]: A tuple containing the registered user data and the generated token.
         """
         data = user_register_dto.model_dump()
         existing_user = mongo.db.users.find_one({"email": data["email"]})
@@ -112,4 +112,11 @@ class UserService:
         }
         mongo.db.users.insert_one(new_user)
 
-        return str(new_user["_id"])
+        token = self.auth_service.generate_token(str(new_user["_id"]))
+        user_data = {
+            "id": str(new_user["_id"]),
+            "email": new_user["email"],
+            "fullname": new_user["fullname"],
+        }
+
+        return user_data, token

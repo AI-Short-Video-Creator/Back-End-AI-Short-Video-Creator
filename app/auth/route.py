@@ -30,8 +30,8 @@ class UserController:
             data = request.json
             dto = UserRegisterDTO(**data)
 
-            user_id = self.service.register(dto)
-            return jsonify({"user_id": user_id}), 201
+            user, token = self.service.register(dto)
+            return jsonify({"user": user, "access_token": token}), 201
         except Exception as e:
             return jsonify({"error": str(e)}), 400
 
