@@ -56,11 +56,9 @@ def register_blueprints(app):
     Args:
         app: Flask application instance
     """
-    from app.sample_bp.route import sample_bp
     from app.script.route import script_bp
 
     blue_prints = [
-        (sample_bp, '/api/sample'),
         (script_bp, '/api/script')
     ]
 
