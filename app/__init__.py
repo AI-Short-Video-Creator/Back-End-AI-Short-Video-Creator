@@ -57,9 +57,11 @@ def register_blueprints(app):
         app: Flask application instance
     """
     from app.script.route import script_bp
+    from app.auth.route import user_bp
 
     blue_prints = [
-        (script_bp, '/api/script')
+        (script_bp, '/api/script'),
+        (user_bp, '/api/auth')
     ]
 
     for blueprint, url_prefix in blue_prints:
