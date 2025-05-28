@@ -13,7 +13,8 @@ class ImageService:
     
     # Hugging Face Stable Diffusion endpoint
     HF_API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
-    
+    HF_TOKEN = os.getenv("HF_TOKEN")
+
     # Get API token from environment variable
 
     def __new__(cls, *args, **kwargs):
