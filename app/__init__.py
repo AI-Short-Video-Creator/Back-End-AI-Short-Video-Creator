@@ -59,11 +59,15 @@ def register_blueprints(app):
     from app.sample_bp.route import sample_bp
     from app.script.route import script_bp
     from app.image.route import image_bp
+    from app.video.route import video_bp
+
 
     blue_prints = [
         (sample_bp, '/api/sample'),
         (script_bp, '/api/script'),
         (image_bp, '/api/image'),
+        (video_bp, '/api/video'),
+
     ]
 
     for blueprint, url_prefix in blue_prints:

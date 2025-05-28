@@ -6,9 +6,14 @@ flask_pymongo==3.0.1
 marshmallow==4.0.0
 python-dotenv==1.1.0
 Werkzeug>=2.3.0
-
+openai
 # AI model dependencies
 fastapi
 uvicorn
 requests
 python-multipart
+
+# Image and video processing
+numpy>=1.19.0
+Pillow>=9.0.0
+moviepy>=1.0.3
