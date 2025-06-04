@@ -11,3 +11,4 @@ class Config:
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
     JWT_ALGORITHM = "HS256"
     MONGO_URI = os.getenv("MONGO_URI")
+    AUDIO_UPLOAD_FOLDER = "generated_audio"
