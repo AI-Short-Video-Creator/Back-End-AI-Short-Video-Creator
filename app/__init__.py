@@ -58,10 +58,12 @@ def register_blueprints(app):
     """
     from app.sample_bp.route import sample_bp
     from app.script.route import script_bp
+    from app.voice_bp.route import voice_bp
 
     blue_prints = [
         (sample_bp, '/api/sample'),
-        (script_bp, '/api/script')
+        (script_bp, '/api/script'),
+        (voice_bp, '/api/voice')
     ]
 
     for blueprint, url_prefix in blue_prints:
