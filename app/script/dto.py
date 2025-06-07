@@ -17,6 +17,24 @@ class ScriptGenerateDTO(BaseModel):
         title="Topic",
         max_length=100,
     )
+    style: str = Field(
+        ...,
+        description="Style for script generation",
+        title="Style",
+        max_length=100,
+    )
+    language: str = Field(
+        ...,
+        description="Language for script generation",
+        title="Language",
+        max_length=100,
+    )
+    wordCount: int = Field(
+        ...,
+        description="Word count for script generation",
+        title="Word Count",
+        ge=1,
+    )
 
     class Config:
         arbitrary_types_allowed = True
