@@ -62,7 +62,10 @@ def insert_image(
         "created_at": datetime.utcnow(),
         "metadata": metadata or {}
     }
-    result = images_collection.insert_one(doc)
+    try:
+        result = images_collection.insert_one(doc)
+    except Exception as e:
+        raise ValueError(f"Failed to insert image: {str(e)}")
     return str(result.inserted_id)
 
 # Example usage:

@@ -3,6 +3,7 @@ import base64
 import requests
 from app.image.dto import ImageGenerateDTO
 import uuid
+import io
 from dotenv import load_dotenv
 from app.file.service import FileService
 from app.image.repo import insert_image
@@ -25,6 +26,7 @@ class ImageService:
         return cls._instance
     
     def __init__(self):
+        self.file_service =  FileService()
         if not self.HF_TOKEN:
             print("Warning: HF_TOKEN environment variable not set. Please set it to use the API.")
     
@@ -83,9 +85,9 @@ class ImageService:
                     # Stream image bytes to Cloudinary
                     image_id = str(uuid.uuid4())
                     image_bytes = io.BytesIO(response.content)
-                    image_url = FileService.uploadImages(image_bytes, image_id)
+                    image_url = self.file_service.uploadImages(image_bytes, image_id)
+                    image_paths.append(image_url)
                     insert_image(image_id, image_url, sentence)
-                    
 
                 else:
                     # If we get JSON response, it might be an error

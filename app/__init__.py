@@ -65,7 +65,6 @@ def register_blueprints(app):
     blue_prints = [
         (script_bp, '/api/script'),
         (user_bp, '/api/auth'),
-        (script_bp, '/api/script'),
         (image_bp, '/api/image'),
         (video_bp, '/api/video'),
 

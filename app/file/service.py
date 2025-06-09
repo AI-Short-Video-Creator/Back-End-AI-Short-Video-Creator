@@ -30,15 +30,16 @@ class FileService:
         except Exception as e:
             raise ValueError(f"Failed to upload image {image_id}: {str(e)}")
     
-    def uploadVideo(self, dto: UploadVideoDTO) -> str:
-        video_url = ""
-        if not dto.path:
-            raise ValueError("No videos provided for upload.")
+    def uploadVideo(self, video_bytes, video_id) -> str:
         try:
-            response = cloudinary.uploader.upload(dto.images.file_path, folder="short_video_creator/videos", public_id=dto.images.file_id, resource_type="video")
-            video_url = response['secure_url']
-            print(f"Uploaded video {dto.images.file_id} to Cloudinary: {response['secure_url']}")
+            upload_result = cloudinary.uploader.upload(
+                video_bytes,
+                public_id=f"videos/{video_id}",
+                resource_type="video",
+                folder="video_creator"
+            )
+            video_url = upload_result['secure_url']
+            print(f"Uploaded video {video_id} to Cloudinary: {video_url}")
+            return video_url
         except Exception as e:
-            raise ValueError(f"Failed to upload video {dto.images.file_id}: {str(e)}")
-        
-        return json.dumps({"video_urls": video_url})
+            raise ValueError(f"Failed to upload video {video_id}: {str(e)}")

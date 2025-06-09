@@ -7,7 +7,7 @@ class UploadImageDTO(BaseModel):
     """
     DTO for uploading images.
     """
-    images: List[ImageItem] = Field(
+    images: str = Field(
         ...,
         description="List of images with file path and file id",
         title="Images",
@@ -31,7 +31,7 @@ class UploadVideoDTO(BaseModel):
     """
     DTO for uploading images.
     """
-    images: VideoItem = Field(
+    images: str = Field(
         ...,
         description="video path to upload",
         title="video path and id",
