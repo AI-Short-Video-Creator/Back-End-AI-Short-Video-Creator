@@ -4,7 +4,8 @@ import requests
 from app.image.dto import ImageGenerateDTO
 import uuid
 from dotenv import load_dotenv
-
+from app.file.service import FileService
+from app.image.repo import insert_image
 # Load environment variables
 load_dotenv()
 HF_TOKEN = os.getenv("HF_TOKEN")
@@ -43,7 +44,7 @@ class ImageService:
         # Extract script from DTO and split by period
         full_script = dto.script
         sentences = [s.strip() for s in full_script.split('.') if s.strip()]
-        
+        images = []
         print(f"Split script into {len(sentences)} sentences")
         
         # Ensure output directory exists
@@ -79,11 +80,13 @@ class ImageService:
                 
                 # The API returns the image bytes directly
                 if response.headers.get("content-type", "").startswith("image/"):
-                    # Save the image to a file
-                    with open(image_filename, "wb") as f:
-                        f.write(response.content)
-                    image_paths.append(image_filename)
-                    print(f"Image saved to {image_filename}")
+                    # Stream image bytes to Cloudinary
+                    image_id = str(uuid.uuid4())
+                    image_bytes = io.BytesIO(response.content)
+                    image_url = FileService.uploadImages(image_bytes, image_id)
+                    insert_image(image_id, image_url, sentence)
+                    
+
                 else:
                     # If we get JSON response, it might be an error
                     result = response.json()

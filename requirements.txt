@@ -17,3 +17,4 @@ python-multipart
 numpy>=1.19.0
 Pillow>=9.0.0
 moviepy>=1.0.3
+cloudinary==1.44.0
