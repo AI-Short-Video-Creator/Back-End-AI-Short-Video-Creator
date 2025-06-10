@@ -8,10 +8,15 @@ class ImageGenerateDTO(BaseModel):
     script: str = Field(
         ...,
         description="Keywords for script generation",
-        title="Keywords",
+        title="script",
         max_length=5000,
     )
-
+    owner_id: str = Field(
+        ...,
+        description="owner_id",
+        title="owner_id",
+        max_length=5000,
+    )
     class Config:
         arbitrary_types_allowed = True
         json_encoders = {

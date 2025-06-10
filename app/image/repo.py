@@ -1,10 +1,3 @@
-from app.extentions import mongo
-
-# Truy cập collection
-from datetime import datetime
-from typing import List, Optional
-images_collection = mongo.db.images
-
 # Schema đề xuất cho 3 collections:
 # 1. images
 # {
@@ -41,12 +34,20 @@ images_collection = mongo.db.images
 #   metadata: dict
 # }
 
+from app.extentions import mongo
+from datetime import datetime
+from typing import Optional
+
+images_collection = mongo.db.images
+
 def insert_image(
     file_id: str,
     url: str,
     script: str,
     owner_id: Optional[str] = None,
     video_id: Optional[str] = None,
+    session_id: Optional[str] = None,
+    status: str = "pending",
     metadata: Optional[dict] = None
 ) -> str:
     """
@@ -55,23 +56,18 @@ def insert_image(
     """
     doc = {
         "file_id": file_id,
+        "file_path": None,  # No local storage
         "url": url,
-        "script": script,
         "owner_id": owner_id,
         "video_id": video_id,
+        "status": status,  # Added status field
         "created_at": datetime.utcnow(),
         "metadata": metadata or {}
     }
+    doc["metadata"]["session_id"] = session_id  # Store session_id in metadata
+    doc["metadata"]["script"] = script  # Store script (sentence) in metadata
     try:
         result = images_collection.insert_one(doc)
+        return str(result.inserted_id)
     except Exception as e:
         raise ValueError(f"Failed to insert image: {str(e)}")
-    return str(result.inserted_id)
-
-# Example usage:
-# image_id = insert_image(
-#     file_id="abc123",
-#     file_path="output/image1.png",
-#     url="https://res.cloudinary.com/xxx/image/upload/v123/abc123.png",
-#     owner_id="user123"
-# )
