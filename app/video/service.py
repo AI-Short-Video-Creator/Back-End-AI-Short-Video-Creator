@@ -10,12 +10,17 @@ import logging
 import tempfile
 import shutil
 
+import cloudinary
+from cloudinary import CloudinaryImage
+import cloudinary.uploader
+import cloudinary.api
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
+
 
 class VideoService:
     _instance = None
@@ -30,17 +35,18 @@ class VideoService:
         return cls._instance
     
     def __init__(self):
-        os.makedirs("output", exist_ok=True)
-    
+        config = cloudinary.config(secure=True)
+
     def generate_video(self, dto: VideoGenerateDTO) -> str:
         """
-        Generate a video from image URLs with transitions and captions from voice text.
+        Generate a video from image URLs with transitions and captions from voice text,
+        and upload to Cloudinary.
         
         Args:
             dto: Data Transfer Object containing image URLs, voices, and video parameters
             
         Returns:
-            str: Path to the generated video file
+            str: Cloudinary URL of the generated video
         """
         if not dto.image_urls or not dto.voices or len(dto.image_urls) != len(dto.voices):
             logger.error("Invalid input: image_urls and voices must be non-empty and equal length")
@@ -48,27 +54,23 @@ class VideoService:
         
         logger.info(f"Generating video with {len(dto.image_urls)} images")
         
-        video_filename = f"output/video_{uuid.uuid4()}.mp4"
-        fps = dto.fps if dto.fps else self.DEFAULT_FPS
-        duration = dto.duration_per_image if dto.duration_per_image else self.DEFAULT_DURATION
-        
-        clips = []
         temp_dir = tempfile.mkdtemp()
+        video_filename = os.path.join(temp_dir, f"video_{uuid.uuid4()}.mp4")
         
         try:
+            fps = dto.fps if dto.fps else self.DEFAULT_FPS
+            duration = dto.duration_per_image if dto.duration_per_image else self.DEFAULT_DURATION
+            clips = []
+            
             for i, (image_url, voice) in enumerate(zip(dto.image_urls, dto.voices)):
                 logger.info(f"Processing image {i+1}/{len(dto.image_urls)}: {image_url[:50]}...")
                 
                 try:
-                    # Download image from URL
                     response = requests.get(image_url, stream=True)
                     response.raise_for_status()
                     img = Image.open(response.raw).convert("RGB")
-                    
-                    # Resize to match resolution
                     img = img.resize(self.DEFAULT_RESOLUTION, Image.LANCZOS)
                     
-                    # Add caption from voice
                     if dto.add_captions and voice:
                         try:
                             font = ImageFont.truetype("arial.ttf", 40)
@@ -88,11 +90,9 @@ class VideoService:
                         )
                         draw.text(position, caption, font=font, fill=(255, 255, 255))
                     
-                    # Save temporarily
                     temp_path = os.path.join(temp_dir, f"temp_{i}.png")
                     img.save(temp_path)
                     
-                    # Create clip
                     img_array = np.array(Image.open(temp_path))
                     clip = ImageClip(img_array, duration=duration)
                     
@@ -108,10 +108,8 @@ class VideoService:
             if not clips:
                 raise ValueError("No valid images to create video")
             
-            # Combine clips
             final_clip = concatenate_videoclips(clips, method="compose")
             
-            # Add audio if provided
             if dto.audio_url:
                 try:
                     response = requests.get(dto.audio_url, stream=True)
@@ -131,14 +129,24 @@ class VideoService:
                 except Exception as e:
                     logger.error(f"Error adding audio {dto.audio_url}: {str(e)}")
             
-            # Export video
             final_clip.write_videofile(video_filename, fps=fps, codec='libx264')
-            logger.info(f"Video created successfully: {video_filename}")
+            logger.info(f"Video generated locally: {video_filename}")
             
-            return video_filename
+            # Upload to Cloudinary
+            logger.info(f"Uploading video to Cloudinary: {video_filename}")
+            upload_response = cloudinary.uploader.upload(
+                video_filename,
+                resource_type="video",
+                public_id=f"videos/video_{uuid.uuid4()}",
+                folder="user_videos"
+            )
+            video_url = upload_response["secure_url"]
+            logger.info(f"Video uploaded to Cloudinary: {video_url}")
+            
+            return video_url
             
         except Exception as e:
-            logger.error(f"Error creating video: {str(e)}")
+            logger.error(f"Error creating or uploading video: {str(e)}")
             raise e
         finally:
             shutil.rmtree(temp_dir, ignore_errors=True)

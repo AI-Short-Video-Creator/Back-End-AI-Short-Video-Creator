@@ -6,6 +6,7 @@ import logging
 import uuid
 from app.extentions import mongo
 from datetime import datetime
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -32,13 +33,13 @@ class VideoController:
             logger.info(f"Processing video generation for user_id: {user_id}")
             
             dto = VideoGenerateDTO(**data)
-            video_path = self.service.generate_video(dto)
+            video_url = self.service.generate_video(dto)
             
             # Store video metadata in MongoDB
             video_id = str(uuid.uuid4())
             mongo.db.videos.insert_one({
                 "video_id": video_id,
-                "video_path": video_path,
+                "video_url": video_url,
                 "owner_id": user_id,
                 "created_at": datetime.utcnow(),
                 "status": "completed"
@@ -52,7 +53,7 @@ class VideoController:
                     {"$set": {"video_id": video_id}}
                 )
             
-            return jsonify({"video_id": video_id, "video_path": video_path}), 200
+            return jsonify({"video_id": video_id, "video_url": video_url}), 200
         except ValueError as e:
             logger.error(f"ValueError in gen_video: {str(e)}")
             return jsonify({"error": str(e)}), 400
