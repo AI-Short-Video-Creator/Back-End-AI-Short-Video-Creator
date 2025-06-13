@@ -7,5 +7,7 @@ __pycache__/
 *.pyo
 
 .env
-.env.*
 .env.staging
+.env.dev
+
+videocreatorbackend-0353dad3ea8a.json
