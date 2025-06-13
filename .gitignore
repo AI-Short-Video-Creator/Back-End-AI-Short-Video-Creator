@@ -11,3 +11,4 @@ __pycache__/
 .env.dev
 
 videocreatorbackend-0353dad3ea8a.json
+generated_audio/
