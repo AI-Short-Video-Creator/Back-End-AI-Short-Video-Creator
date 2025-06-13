@@ -1,9 +1,8 @@
 from flask import Blueprint, request, jsonify, current_app
 import logging
 from pydantic import ValidationError
-
-from app.voice_bp.service import VoiceService
-from app.voice_bp.dto import GoogleTTSRequest, TTSResponse
+from app.voice.service import VoiceService
+from app.voice.dto import GoogleTTSRequest, TTSResponse
 
 logger = logging.getLogger(__name__)
 
