@@ -36,13 +36,11 @@ class ScriptService:
         word_count = data.get("wordCount", 100)
         
         prompt = (
-            f"Create a short, engaging script (100-150 words) for a social media video.\n"
-            f"Main topic: \"{topic}\".\n"
-            f"Related keywords: {', '.join(keywords)}.\n"
-            f"Style: {style}.\n"
-            f"Language: {language}.\n"
-            f"Ensure the script is suitable for a {word_count}-word format.\n"
-            f"Make it emotionally appealing, concise, and resonate with a young audience."
+            "Create a short, engaging script (100-150 words) for a social media video. "
+            "For each scene, follow this pattern: <visual description> <dialogue or narration for that scene>. "
+            f"Main topic: \"{topic}\". "
+            f"Related keywords: {', '.join(keywords)}. "
+            "Make it emotionally appealing, concise, and resonate with a young audience."
         )
 
         response = self.llm.chat.completions.create(
