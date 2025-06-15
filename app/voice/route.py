@@ -1,8 +1,8 @@
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify
 import logging
 from pydantic import ValidationError
 from app.voice.service import VoiceService
-from app.voice.dto import GoogleTTSRequest, TTSResponse
+from app.voice.dto import TTSRequest, TTSVoiceCloneRequest, TTSResponse, VoiceListResponse
 
 logger = logging.getLogger(__name__)
 
@@ -14,88 +14,67 @@ class VoiceController:
 
     def _register_routes(self):
         self.voice_bp.add_url_rule('/samples', view_func=self.get_voice_samples, methods=['GET'])
-        self.voice_bp.add_url_rule('/google-tts', view_func=self.generate_google_tts, methods=['POST'])
+        self.voice_bp.add_url_rule('/tts', view_func=self.generate_tts, methods=['POST'])
+        self.voice_bp.add_url_rule('/tts-clone-voice', view_func=self.generate_tts_clone_voice, methods=['POST'])
         
     def get_voice_samples(self):
-        """
-        API endpoint to retrieve a list of available voice samples.
-        Supports filtering via query parameters:
-        - lang (e.g., "en-US", "vi-VN")
-        - gender (e.g., "FEMALE", "MALE")
-        - type (e.g., "Standard", "WaveNet")
-        """
         try:
-            lang_code = request.args.get('lang')
-            gender = request.args.get('gender')
-            voice_type = request.args.get('type')
-
-            current_app.logger.info(
-                f"Fetching voice samples with filters - lang: {lang_code}, gender: {gender}, type: {voice_type}"
+            voices = self.service.get_voice_samples()
+            response = VoiceListResponse(
+                total_count=len(voices),
+                message="Successfully retrieved voice samples.",
+                voices=[voice.dict() for voice in voices]
             )
-
-            samples_data = self.service.get_samples_by_criteria(
-                language_code=lang_code,
-                gender=gender,
-                voice_type=voice_type
+            return jsonify(response.dict()), 200
+        except Exception as e:
+            logger.error(f"Error retrieving voice samples: {e}")
+            return jsonify({"message": "Failed to retrieve voice samples."}), 500
+    
+    def generate_tts(self):
+        try:
+            data = request.get_json()
+            tts_request = TTSRequest(**data)
+            response_data = self.service.generate_tts(tts_request)
+            response = TTSResponse(
+                message="TTS generated successfully.",
+                audio_path=response_data['audio_path'],
+                filename=response_data['filename'],
+                voice_used=response_data.get('voice_used')
             )
-
-            if not samples_data:
-                current_app.logger.warning(
-                    "No voice samples found matching criteria or metadata could not be loaded."
-                )
-                if lang_code or gender or voice_type:
-                    return jsonify({"message": "No voice samples found matching your criteria.", "data": []}), 200
-                else:
-                    return jsonify({"message": "No voice samples currently available.", "data": []}), 200
-            
-            response_data = []
-            for sample in samples_data:
-                response_data.append({
-                    "voiceName": sample.get("voiceName"),
-                    "languageCode": sample.get("languageCode"),
-                    "gender": sample.get("ssmlGender"),
-                    "type": sample.get("voiceTypeApproximation"),
-                    "sampleUrl": sample.get("cloudinaryUrl")
-                })
-
-            return jsonify({
-                "message": "Voice samples retrieved successfully.",
-                "count": len(response_data),
-                "data": response_data
-            }), 200
-
+            return jsonify(response.dict()), 200
+        except ValidationError as ve:
+            logger.error(f"Validation error: {ve}")
+            return jsonify({"message": str(ve)}), 400
         except Exception as e:
-            current_app.logger.error(f"Error in get_voice_samples: {e}", exc_info=True)
-            return jsonify({"error": "An unexpected error occurred while fetching voice samples."}), 500
-
-    def generate_google_tts(self):
-        """Handles Google TTS audio generation requests using Pydantic DTOs."""
+            logger.error(f"Error generating TTS: {e}")
+            return jsonify({"message": "Failed to generate TTS."}), 500
+    
+    def generate_tts_clone_voice(self):
         try:
-            json_data = request.get_json()
-            if not json_data:
-                return jsonify({"error": "Request body must be JSON and not empty."}), 400
-            
-            tts_request_data = GoogleTTSRequest.model_validate(json_data)
-            
-        except ValidationError as err:
-            logger.warning(f"Pydantic validation error for Google TTS request: {err.errors()}")
-            return jsonify({"error": "Validation failed", "details": err.errors()}), 400
+            text = request.form.get("text")
+            audio_file = request.files.get("audio")
+            if not text or not audio_file:
+                return jsonify({"message": "Missing text or audio file"}), 400
+
+            import base64
+            audio_bytes = audio_file.read()
+            audio_base64 = base64.b64encode(audio_bytes).decode("utf-8")
+
+            tts_voice_clone_request = TTSVoiceCloneRequest(text=text, audio_base64=audio_base64)
+            response_data = self.service.generate_tts_voice_clone(tts_voice_clone_request)
+            response = TTSResponse(
+                message="TTS voice clone generated successfully.",
+                audio_path=response_data['audio_path'],
+                filename=response_data['filename'],
+                voice_used=response_data.get('voice_used')
+            )
+            return jsonify(response.dict()), 200
+        except ValidationError as ve:
+            logger.error(f"Validation error: {ve}")
+            return jsonify({"message": str(ve)}), 400
         except Exception as e:
-            logger.error(f"Error parsing JSON or unexpected error before Pydantic validation: {e}", exc_info=True)
-            return jsonify({"error": "Invalid request format or unexpected error."}), 400
-
-        try:
-            result_data = self.service.generate_google_tts_audio(tts_request_data.model_dump())
-
-            validated_response_data = TTSResponse.model_validate(result_data)
-            return jsonify(validated_response_data.model_dump()), 200
-
-        except ConnectionError as conn_err:
-            logger.error(f"TTS Service Connection Error: {conn_err}")
-            return jsonify({"error": str(conn_err)}), 503
-        except Exception as e:
-            logger.error(f"Failed to generate Google TTS audio: {e}", exc_info=True)
-            return jsonify({"error": "An unexpected error occurred while generating audio."}), 500
+            logger.error(f"Error generating TTS voice clone: {e}")
+            return jsonify({"message": "Failed to generate TTS voice clone."}), 500
 
 voice_controller_instance = VoiceController()
 voice_bp = voice_controller_instance.voice_bp
