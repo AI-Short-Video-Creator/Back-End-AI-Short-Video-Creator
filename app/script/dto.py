@@ -5,16 +5,10 @@ class ScriptGenerateDTO(BaseModel):
     """
     DTO for script generation.
     """
-    keywords: list[str] = Field(
+    keyword: str = Field(
         ...,
-        description="Keywords for script generation",
-        title="Keywords",
-        max_length=100,
-    )
-    topic: str = Field(
-        ...,
-        description="Topic for script generation",
-        title="Topic",
+        description="Keyword for script generation",
+        title="Keyword",
         max_length=100,
     )
     style: str = Field(

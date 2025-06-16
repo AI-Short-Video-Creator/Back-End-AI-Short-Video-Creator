@@ -22,8 +22,6 @@ class ScriptController:
         try:
             data = request.json
             dto = ScriptGenerateDTO(**data)
-            user_id = get_jwt_identity()  # Get the user ID from JWT token
-            print(f"User ID: {user_id}")  # Debugging line to check user ID
 
             script = self.service.generate_script(dto)
             return jsonify({"data": script}), 200

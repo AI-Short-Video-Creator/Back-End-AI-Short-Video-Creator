@@ -32,8 +32,7 @@ class ScriptService:
         """
 
         data = dto.model_dump()
-        keywords = data.get("keywords")
-        topic = data.get("topic")
+        keyword = data.get("keyword")
         style = data.get("style")
         language = data.get("language")
         word_count = data.get("wordCount", 100)
@@ -41,8 +40,7 @@ class ScriptService:
         prompt = (
             f"Create a short, engaging script (about {word_count} words) for a social media video. "
             "For each scene, follow this pattern: <visual description> <dialogue or narration for that scene>. "
-            f"Main topic: \"{topic}\". "
-            f"Related keywords: {', '.join(keywords)}. "
+            f"Main keyword: \"{keyword}\". "
             f"Style: {style}. "
             f"Language: {language}. "
             "Make it emotionally appealing, concise, and resonate with a young audience."
