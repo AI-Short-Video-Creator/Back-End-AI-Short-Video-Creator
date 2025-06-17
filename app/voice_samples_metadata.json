@@ -1,0 +1,326 @@
+[
+    {
+        "voiceName": "en-US-Chirp-HD-F",
+        "languageCode": "en-US",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "en-US-Chirp-HD-F_FEMALE_rkdbyy.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277820/en-US-Chirp-HD-F_FEMALE_rkdbyy.mp3",
+        "cloudinaryPublicId": "en-US-Chirp-HD-F_FEMALE_rkdbyy"
+    },
+    {
+        "voiceName": "en-US-Chirp-HD-O",
+        "languageCode": "en-US",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "en-US-Chirp-HD-O_FEMALE_lvygrr.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277820/en-US-Chirp-HD-O_FEMALE_lvygrr.mp3",
+        "cloudinaryPublicId": "en-US-Chirp-HD-O_FEMALE_lvygrr"
+    },
+    {
+        "voiceName": "en-US-Chirp3-HD-Achernar",
+        "languageCode": "en-US",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "en-US-Chirp3-HD-Achernar_FEMALE_cbrg14.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277817/en-US-Chirp3-HD-Achernar_FEMALE_cbrg14.mp3",
+        "cloudinaryPublicId": "en-US-Chirp3-HD-Achernar_FEMALE_cbrg14"
+    },
+    {
+        "voiceName": "en-US-Chirp3-HD-Aoede",
+        "languageCode": "en-US",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "en-US-Chirp3-HD-Aoede_FEMALE_mxlkda.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277818/en-US-Chirp3-HD-Aoede_FEMALE_mxlkda.mp3",
+        "cloudinaryPublicId": "en-US-Chirp3-HD-Aoede_FEMALE_mxlkda"
+    },
+    {
+        "voiceName": "en-US-Chirp3-HD-Autonoe",
+        "languageCode": "en-US",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "en-US-Chirp3-HD-Autonoe_FEMALE_in1czk.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277818/en-US-Chirp3-HD-Autonoe_FEMALE_in1czk.mp3",
+        "cloudinaryPublicId": "en-US-Chirp3-HD-Autonoe_FEMALE_in1czk"
+    },
+    {
+        "voiceName": "en-US-Casual-K",
+        "languageCode": "en-US",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "en-US-Casual-K_MALE_kiw94f.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277817/en-US-Casual-K_MALE_kiw94f.mp3",
+        "cloudinaryPublicId": "en-US-Casual-K_MALE_kiw94f"
+    },
+    {
+        "voiceName": "en-US-Chirp-HD-D",
+        "languageCode": "en-US",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "en-US-Chirp-HD-D_MALE_h4zx1v.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277819/en-US-Chirp-HD-D_MALE_h4zx1v.mp3",
+        "cloudinaryPublicId": "en-US-Chirp-HD-D_MALE_h4zx1v"
+    },
+    {
+        "voiceName": "en-US-Chirp3-HD-Achird",
+        "languageCode": "en-US",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "en-US-Chirp3-HD-Achird_MALE_homwxk.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277818/en-US-Chirp3-HD-Achird_MALE_homwxk.mp3",
+        "cloudinaryPublicId": "en-US-Chirp3-HD-Achird_MALE_homwxk"
+    },
+    {
+        "voiceName": "en-US-Chirp3-HD-Algenib",
+        "languageCode": "en-US",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "en-US-Chirp3-HD-Algenib_MALE_zpkwya.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277817/en-US-Chirp3-HD-Algenib_MALE_zpkwya.mp3",
+        "cloudinaryPublicId": "en-US-Chirp3-HD-Algenib_MALE_zpkwya"
+    },
+    {
+        "voiceName": "en-US-Chirp3-HD-Algieba",
+        "languageCode": "en-US",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "en-US-Chirp3-HD-Algieba_MALE_gnubst.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277817/en-US-Chirp3-HD-Algieba_MALE_gnubst.mp3",
+        "cloudinaryPublicId": "en-US-Chirp3-HD-Algieba_MALE_gnubst"
+    },
+    {
+        "voiceName": "en-US-Neural2-C",
+        "languageCode": "en-US",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "en-US-Neural2-C_FEMALE_ciepee.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277829/en-US-Neural2-C_FEMALE_ciepee.mp3",
+        "cloudinaryPublicId": "en-US-Neural2-C_FEMALE_ciepee"
+    },
+    {
+        "voiceName": "en-US-Neural2-E",
+        "languageCode": "en-US",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "en-US-Neural2-E_FEMALE_yssdyl.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277830/en-US-Neural2-E_FEMALE_yssdyl.mp3",
+        "cloudinaryPublicId": "en-US-Neural2-E_FEMALE_yssdyl"
+    },
+    {
+        "voiceName": "en-US-Neural2-F",
+        "languageCode": "en-US",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "en-US-Neural2-F_FEMALE_vrf24d.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277831/en-US-Neural2-F_FEMALE_vrf24d.mp3",
+        "cloudinaryPublicId": "en-US-Neural2-F_FEMALE_vrf24d"
+    },
+    {
+        "voiceName": "en-US-Neural2-G",
+        "languageCode": "en-US",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "en-US-Neural2-G_FEMALE_x6jhce.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277832/en-US-Neural2-G_FEMALE_x6jhce.mp3",
+        "cloudinaryPublicId": "en-US-Neural2-G_FEMALE_x6jhce"
+    },
+    {
+        "voiceName": "en-US-Neural2-H",
+        "languageCode": "en-US",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "en-US-Neural2-H_FEMALE_fcrvmn.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277833/en-US-Neural2-H_FEMALE_fcrvmn.mp3",
+        "cloudinaryPublicId": "en-US-Neural2-H_FEMALE_fcrvmn"
+    },
+    {
+        "voiceName": "en-US-Neural2-A",
+        "languageCode": "en-US",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "en-US-Neural2-A_MALE_mftp3o.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277821/en-US-Neural2-A_MALE_mftp3o.mp3",
+        "cloudinaryPublicId": "en-US-Neural2-A_MALE_mftp3o"
+    },
+    {
+        "voiceName": "en-US-Neural2-D",
+        "languageCode": "en-US",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "en-US-Neural2-D_MALE_qpw2oj.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277830/en-US-Neural2-D_MALE_qpw2oj.mp3",
+        "cloudinaryPublicId": "en-US-Neural2-D_MALE_qpw2oj"
+    },
+    {
+        "voiceName": "en-US-Neural2-I",
+        "languageCode": "en-US",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "en-US-Neural2-I_MALE_sob046.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277834/en-US-Neural2-I_MALE_sob046.mp3",
+        "cloudinaryPublicId": "en-US-Neural2-I_MALE_sob046"
+    },
+    {
+        "voiceName": "en-US-Neural2-J",
+        "languageCode": "en-US",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "en-US-Neural2-J_MALE_ksy6ll.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277835/en-US-Neural2-J_MALE_ksy6ll.mp3",
+        "cloudinaryPublicId": "en-US-Neural2-J_MALE_ksy6ll"
+    },
+    {
+        "voiceName": "en-US-Wavenet-A",
+        "languageCode": "en-US",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "en-US-Wavenet-A_MALE_clexnu.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277835/en-US-Wavenet-A_MALE_clexnu.mp3",
+        "cloudinaryPublicId": "en-US-Wavenet-A_MALE_clexnu"
+    },
+    {
+        "voiceName": "vi-VN-Chirp3-HD-Achernar",
+        "languageCode": "vi-VN",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "vi-VN-Chirp3-HD-Achernar_FEMALE_bsp6nw.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277836/vi-VN-Chirp3-HD-Achernar_FEMALE_bsp6nw.mp3",
+        "cloudinaryPublicId": "vi-VN-Chirp3-HD-Achernar_FEMALE_bsp6nw"
+    },
+    {
+        "voiceName": "vi-VN-Chirp3-HD-Aoede",
+        "languageCode": "vi-VN",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "vi-VN-Chirp3-HD-Aoede_FEMALE_lgrecm.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277840/vi-VN-Chirp3-HD-Aoede_FEMALE_lgrecm.mp3",
+        "cloudinaryPublicId": "vi-VN-Chirp3-HD-Aoede_FEMALE_lgrecm"
+    },
+    {
+        "voiceName": "vi-VN-Chirp3-HD-Autonoe",
+        "languageCode": "vi-VN",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "vi-VN-Chirp3-HD-Autonoe_FEMALE_hvt3hu.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277841/vi-VN-Chirp3-HD-Autonoe_FEMALE_hvt3hu.mp3",
+        "cloudinaryPublicId": "vi-VN-Chirp3-HD-Autonoe_FEMALE_hvt3hu"
+    },
+    {
+        "voiceName": "vi-VN-Chirp3-HD-Callirrhoe",
+        "languageCode": "vi-VN",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "vi-VN-Chirp3-HD-Callirrhoe_FEMALE_nxxyd6.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277842/vi-VN-Chirp3-HD-Callirrhoe_FEMALE_nxxyd6.mp3",
+        "cloudinaryPublicId": "vi-VN-Chirp3-HD-Callirrhoe_FEMALE_nxxyd6"
+    },
+    {
+        "voiceName": "vi-VN-Chirp3-HD-Despina",
+        "languageCode": "vi-VN",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "vi-VN-Chirp3-HD-Despina_FEMALE_zp7rzd.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277844/vi-VN-Chirp3-HD-Despina_FEMALE_zp7rzd.mp3",
+        "cloudinaryPublicId": "vi-VN-Chirp3-HD-Despina_FEMALE_zp7rzd"
+    },
+    {
+        "voiceName": "vi-VN-Chirp3-HD-Achird",
+        "languageCode": "vi-VN",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "vi-VN-Chirp3-HD-Achird_MALE_i8o5o9.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277836/vi-VN-Chirp3-HD-Achird_MALE_i8o5o9.mp3",
+        "cloudinaryPublicId": "vi-VN-Chirp3-HD-Achird_MALE_i8o5o9"
+    },
+    {
+        "voiceName": "vi-VN-Chirp3-HD-Algenib",
+        "languageCode": "vi-VN",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "vi-VN-Chirp3-HD-Algenib_MALE_czav3k.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277837/vi-VN-Chirp3-HD-Algenib_MALE_czav3k.mp3",
+        "cloudinaryPublicId": "vi-VN-Chirp3-HD-Algenib_MALE_czav3k"
+    },
+    {
+        "voiceName": "vi-VN-Chirp3-HD-Algieba",
+        "languageCode": "vi-VN",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "vi-VN-Chirp3-HD-Algieba_MALE_if9qg8.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277838/vi-VN-Chirp3-HD-Algieba_MALE_if9qg8.mp3",
+        "cloudinaryPublicId": "vi-VN-Chirp3-HD-Algieba_MALE_if9qg8"
+    },
+    {
+        "voiceName": "vi-VN-Chirp3-HD-Alnilam",
+        "languageCode": "vi-VN",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "vi-VN-Chirp3-HD-Alnilam_MALE_ptpkyh.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277839/vi-VN-Chirp3-HD-Alnilam_MALE_ptpkyh.mp3",
+        "cloudinaryPublicId": "vi-VN-Chirp3-HD-Alnilam_MALE_ptpkyh"
+    },
+    {
+        "voiceName": "vi-VN-Chirp3-HD-Charon",
+        "languageCode": "vi-VN",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "Standard",
+        "fileName": "vi-VN-Chirp3-HD-Charon_MALE_lvtrsb.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277843/vi-VN-Chirp3-HD-Charon_MALE_lvtrsb.mp3",
+        "cloudinaryPublicId": "vi-VN-Chirp3-HD-Charon_MALE_lvtrsb"
+    },
+    {
+        "voiceName": "vi-VN-Neural2-A",
+        "languageCode": "vi-VN",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "vi-VN-Neural2-A_FEMALE_d54gs2.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277845/vi-VN-Neural2-A_FEMALE_d54gs2.mp3",
+        "cloudinaryPublicId": "vi-VN-Neural2-A_FEMALE_d54gs2"
+    },
+    {
+        "voiceName": "vi-VN-Wavenet-A",
+        "languageCode": "vi-VN",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "vi-VN-Wavenet-A_FEMALE_gmvxb9.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277846/vi-VN-Wavenet-A_FEMALE_gmvxb9.mp3",
+        "cloudinaryPublicId": "vi-VN-Wavenet-A_FEMALE_gmvxb9"
+    },
+    {
+        "voiceName": "vi-VN-Wavenet-C",
+        "languageCode": "vi-VN",
+        "ssmlGender": "FEMALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "vi-VN-Wavenet-C_FEMALE_advkqo.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277849/vi-VN-Wavenet-C_FEMALE_advkqo.mp3",
+        "cloudinaryPublicId": "vi-VN-Wavenet-C_FEMALE_advkqo"
+    },
+    {
+        "voiceName": "vi-VN-Neural2-D",
+        "languageCode": "vi-VN",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "vi-VN-Neural2-D_MALE_txkuai.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277845/vi-VN-Neural2-D_MALE_txkuai.mp3",
+        "cloudinaryPublicId": "vi-VN-Neural2-D_MALE_txkuai"
+    },
+    {
+        "voiceName": "vi-VN-Wavenet-B",
+        "languageCode": "vi-VN",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "vi-VN-Wavenet-B_MALE_kqxa0g.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277848/vi-VN-Wavenet-B_MALE_kqxa0g.mp3",
+        "cloudinaryPublicId": "vi-VN-Wavenet-B_MALE_kqxa0g"
+    },
+    {
+        "voiceName": "vi-VN-Wavenet-D",
+        "languageCode": "vi-VN",
+        "ssmlGender": "MALE",
+        "voiceTypeApproximation": "WaveNet",
+        "fileName": "vi-VN-Wavenet-D_MALE_enokux.mp3",
+        "cloudinaryUrl": "https://res.cloudinary.com/dbmobvcbt/video/upload/v1748277849/vi-VN-Wavenet-D_MALE_enokux.mp3",
+        "cloudinaryPublicId": "vi-VN-Wavenet-D_MALE_enokux"
+    }
+]
