@@ -36,13 +36,22 @@ class ScriptService:
         style = data.get("style")
         language = data.get("language")
         word_count = data.get("wordCount", 100)
-        
+        tone = data.get("tone", "neutral")
+        perspective = data.get("perspective", "third")
+        humor = data.get("humor", "none")
+        quotes = data.get("quotes", "no")
+
         prompt = (
             f"Create a short, engaging script (about {word_count} words) for a social media video. "
             "For each scene, follow this pattern: <visual description> <dialogue or narration for that scene>. "
             f"Main keyword: \"{keyword}\". "
             f"Style: {style}. "
             f"Language: {language}. "
+            f"Word Count: {word_count}. "
+            f"Tone: {tone}. "
+            f"Perspective: {perspective}. "
+            f"Humor: {humor}. "
+            f"Quotes: {quotes}. "
             "Make it emotionally appealing, concise, and resonate with a young audience."
         )
 

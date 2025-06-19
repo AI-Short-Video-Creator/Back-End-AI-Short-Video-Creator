@@ -29,6 +29,29 @@ class ScriptGenerateDTO(BaseModel):
         title="Word Count",
         ge=1,
     )
+    tone: str = Field(
+        ...,
+        description="Tone for script generation",
+        title="Tone",
+        max_length=100,
+    )
+    perspective: str = Field(
+        ...,
+        description="Perspective for script generation",
+        title="Perspective",
+        max_length=100,
+    )
+    humor: str = Field(
+        ...,
+        description="Humor level for script generation",
+        title="Humor",
+        max_length=100,
+    )
+    quotes: str = Field(
+        ...,
+        description="Whether to include quotes in the script",
+        title="Quotes",
+    )
 
     class Config:
         arbitrary_types_allowed = True
