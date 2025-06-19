@@ -15,6 +15,7 @@ class VideoController:
         """
         self.video_bp.add_url_rule('/', view_func=self.get_videos, methods=['GET'])
         self.video_bp.add_url_rule('/upload', view_func=self.upload_video, methods=['POST'])
+        self.video_bp.add_url_rule('/<string:id>', view_func=self.delete_video, methods=['DELETE'])
 
     @jwt_required()
     def get_videos(self):
@@ -50,6 +51,26 @@ class VideoController:
         try:
             video_info = self.service.upload_video(file, owner_id, title, thumbnail)
             return jsonify(video_info), 201
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+        
+    @jwt_required()
+    def delete_video(self, id: str):
+        """
+        Delete a video by its ID.
+        
+        Args:
+            video_id (str): The ID of the video to delete.
+        
+        Returns:
+            JSON response indicating success or failure.
+        """
+        try:
+            result = self.service.delete_video(id)
+            if result:
+                return jsonify({"message": "Video deleted successfully"}), 200
+            else:
+                return jsonify({"error": "Video not found"}), 404
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
