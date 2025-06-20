@@ -57,16 +57,29 @@ class ImageService:
         logger.info(f"Using theme: {themes}")
         
         # Extract scenes and voices
-        scene_matches = list(re.finditer(r"\*\*\[Scene\s*\d+:\s*(.*?)\]\*\*", full_script))
-        voice_matches = list(re.finditer(r"\*\*(.*?):\*\*\s*\"(.*?)\"", full_script))
+        # scene_matches = list(re.finditer(r"\*\*\[Scene\s*\d+:\s*(.*?)\]\*\*", full_script))
+        # voice_matches = list(re.finditer(r"\*\*(.*?):\*\*\s*\"(.*?)\"", full_script))
         
-        scenes = []
-        for scene_match, voice_match in zip(scene_matches, voice_matches):
-            scene_text = scene_match.group(1).strip()
-            voice_text = voice_match.group(2).strip()
-            if scene_text and voice_text:
-                scenes.append({"scene": scene_text, "voice": voice_text})
-        
+        # scenes = []
+        # for scene_match, voice_match in zip(scene_matches, voice_matches):
+        #     scene_text = scene_match.group(1).strip()
+        #     voice_text = voice_match.group(2).strip()
+        #     if scene_text and voice_text:
+        #         scenes.append({"scene": scene_text, "voice": voice_text})
+                # ...existing code...
+                # Hardcode 3 scenes
+        scenes = [
+            {
+                "scene": "A bustling city street, with people wearing masks and interacting cautiously.",
+                "voice": "Narrator: \"Remember when we thought normal was just around the corner?\""
+            },
+            {
+                "scene": "Quick cuts of a young person scrolling through news headlines on their phone.",
+                "voice": "Narrator: \"Newsflash: COVID-19 is making a comeback.\""
+            },
+           
+        ]
+        # ...existing code...
         logger.info(f"Split script into {len(scenes)} scenes with voices")
         
         image_data = []
