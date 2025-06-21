@@ -28,3 +28,6 @@ pytrends
 
 # Voice and audio processing
 google-cloud-texttospeech
+
+# Social upload
+google-api-python-client

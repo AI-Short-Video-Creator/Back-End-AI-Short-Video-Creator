@@ -63,6 +63,8 @@ def register_blueprints(app):
     from app.image.route import image_bp
     from app.video.route import video_bp
     from app.voice.route import voice_bp
+    from app.caption.route import caption_bp
+    from app.upload_youtube.route import youtube_bp
 
 
     blue_prints = [
@@ -72,6 +74,8 @@ def register_blueprints(app):
         (image_bp, '/api/image'),
         (video_bp, '/api/video'),
         (voice_bp, '/api/voice'),
+        (caption_bp, '/api/caption'),
+        (youtube_bp, '/api/youtube')
     ]
 
     for blueprint, url_prefix in blue_prints:
