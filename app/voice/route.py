@@ -2,7 +2,8 @@ from flask import Blueprint, request, jsonify
 import logging
 from pydantic import ValidationError
 from app.voice.service import VoiceService
-from app.voice.dto import TTSRequest, TTSVoiceCloneRequest, TTSResponse, VoiceListResponse
+from app.voice.dto import VoiceListResponse, GCTTSRequest, TTSResponse, VoiceCloneResponse, ElevenlabsTTSRequest
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 logger = logging.getLogger(__name__)
 
@@ -13,68 +14,80 @@ class VoiceController:
         self._register_routes()
 
     def _register_routes(self):
-        self.voice_bp.add_url_rule('/samples', view_func=self.get_voice_samples, methods=['GET'])
-        self.voice_bp.add_url_rule('/tts', view_func=self.generate_tts, methods=['POST'])
-        self.voice_bp.add_url_rule('/tts-clone-voice', view_func=self.generate_tts_clone_voice, methods=['POST'])
-        
-    def get_voice_samples(self):
+        self.voice_bp.add_url_rule('', view_func=self.get_voices, methods=['GET'])
+        self.voice_bp.add_url_rule('/synthesis', view_func=self.generate_speech, methods=['POST'])
+        self.voice_bp.add_url_rule('/clones', view_func=self.create_cloned_voice, methods=['POST'])
+        self.voice_bp.add_url_rule('/clones/<string:voice_id>', view_func=self.delete_cloned_voice, methods=['DELETE'])
+
+    @jwt_required()
+    def get_voices(self):
         try:
-            voices = self.service.get_voice_samples()
+            language_code = request.args.get('language_code', 'en-US')
+            voices = self.service.get_gctts_voice_lists(language_code=language_code)
             response = VoiceListResponse(
                 total_count=len(voices),
-                message="Successfully retrieved voice samples.",
-                voices=[voice.dict() for voice in voices]
+                message="Successfully retrieved voice lists.",
+                voices=voices
             )
-            return jsonify(response.dict()), 200
+            return jsonify(response.model_dump()), 200
         except Exception as e:
-            logger.error(f"Error retrieving voice samples: {e}")
-            return jsonify({"message": "Failed to retrieve voice samples."}), 500
-    
-    def generate_tts(self):
+            logger.error(f"Error retrieving voice lists: {e}")
+            return jsonify({"message": "Failed to retrieve voice lists."}), 500
+
+    @jwt_required()
+    def generate_speech(self):
         try:
             data = request.get_json()
-            tts_request = TTSRequest(**data)
-            response_data = self.service.generate_tts(tts_request)
+            if data['provider'] == 'gctts':
+                dto = GCTTSRequest(**data)
+                response_data = self.service.gctts_generate_tts(dto)
+            elif data['provider'] == 'elevenlabs':
+                dto = ElevenlabsTTSRequest(**data)
+                response_data = self.service.elevenlabs_generate_tts(dto)
+            else:
+                return jsonify({"message": "Unsupported provider"}), 400
             response = TTSResponse(
-                message="TTS generated successfully.",
+                message="Speech generated successfully.",
                 audio_path=response_data['audio_path'],
                 filename=response_data['filename'],
                 voice_used=response_data.get('voice_used')
             )
-            return jsonify(response.dict()), 200
+            return jsonify(response.model_dump()), 201
         except ValidationError as ve:
             logger.error(f"Validation error: {ve}")
             return jsonify({"message": str(ve)}), 400
         except Exception as e:
-            logger.error(f"Error generating TTS: {e}")
-            return jsonify({"message": "Failed to generate TTS."}), 500
-    
-    def generate_tts_clone_voice(self):
+            logger.error(f"Error generating speech: {e}")
+            return jsonify({"message": "Failed to generate speech."}), 500
+
+    @jwt_required()
+    def create_cloned_voice(self):
         try:
-            text = request.form.get("text")
-            audio_file = request.files.get("audio")
-            if not text or not audio_file:
-                return jsonify({"message": "Missing text or audio file"}), 400
-
-            import base64
-            audio_bytes = audio_file.read()
-            audio_base64 = base64.b64encode(audio_bytes).decode("utf-8")
-
-            tts_voice_clone_request = TTSVoiceCloneRequest(text=text, audio_base64=audio_base64)
-            response_data = self.service.generate_tts_voice_clone(tts_voice_clone_request)
-            response = TTSResponse(
-                message="TTS voice clone generated successfully.",
-                audio_path=response_data['audio_path'],
-                filename=response_data['filename'],
-                voice_used=response_data.get('voice_used')
+            audio_file = request.files.get("audio_file")
+            if not audio_file:
+                return jsonify({"message": "Missing audio file"}), 400
+            
+            response_data = self.service.clone_voice(audio_file)
+            response = VoiceCloneResponse(
+                message="Voice cloned successfully.",
+                voice_id=response_data.voice_id,
             )
-            return jsonify(response.dict()), 200
+            return jsonify(response.model_dump()), 201
         except ValidationError as ve:
             logger.error(f"Validation error: {ve}")
             return jsonify({"message": str(ve)}), 400
         except Exception as e:
-            logger.error(f"Error generating TTS voice clone: {e}")
-            return jsonify({"message": "Failed to generate TTS voice clone."}), 500
+            logger.error(f"Error cloning voice: {e}")
+            return jsonify({"message": "Failed to clone voice."}), 500
+
+    @jwt_required()
+    def delete_cloned_voice(self, voice_id):
+        try:
+            self.service.delete_cloned_voice(voice_id)
+            return jsonify({"message": "Cloned voice deleted successfully."}), 200
+        except Exception as e:
+            logger.error(f"Error deleting cloned voice: {e}")
+            return jsonify({"message": "Failed to delete cloned voice."}), 500
 
 voice_controller_instance = VoiceController()
 voice_bp = voice_controller_instance.voice_bp
