@@ -27,4 +27,5 @@ Werkzeug==3.1.3
 pytrends
 
 # Voice and audio processing
+google-cloud-texttospeech
 elevenlabs
