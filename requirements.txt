@@ -28,3 +28,4 @@ pytrends
 
 # Voice and audio processing
 google-cloud-texttospeech
+elevenlabs
