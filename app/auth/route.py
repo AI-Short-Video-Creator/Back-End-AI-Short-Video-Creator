@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from app.auth.service import UserService
 from app.auth.dto import UserLoginDTO, UserRegisterDTO
+from pydantic import ValidationError
 
 class UserController:
     def __init__(self):
@@ -21,6 +22,9 @@ class UserController:
 
             user, token = self.service.login(dto)
             return jsonify({"user": user, "access_token": token}), 200
+        except ValidationError as e:
+            error_messages = e.errors()[0]["msg"] if e.errors() else ["Invalid input data"]
+            return jsonify({"error": error_messages}), 400
         except Exception as e:
             return jsonify({"error": str(e)}), 400
 
@@ -32,6 +36,9 @@ class UserController:
 
             user, token = self.service.register(dto)
             return jsonify({"user": user, "access_token": token}), 201
+        except ValidationError as e:
+            error_messages = e.errors()[0]["msg"] if e.errors() else ["Invalid input data"]
+            return jsonify({"error": error_messages}), 400
         except Exception as e:
             return jsonify({"error": str(e)}), 400
 
