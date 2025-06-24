@@ -141,7 +141,7 @@ def get_total_views():
     access_token = auth_header.replace("Bearer ", "")
 
     try:
-        # ✅ Thêm query param đúng cách
+        # Thêm query param đúng cách
         fields = "cover_image_url,id,title,view_count"
         videos_url = f"https://open.tiktokapis.com/v2/video/list/?fields={fields}"
 
@@ -230,6 +230,7 @@ def tiktok_monthly_views():
         # Khởi tạo các tháng trong khoảng thời gian
         result = {}
         start_dt = datetime.fromisoformat(start).date()
+        print(start_dt)
         end_dt = datetime.fromisoformat(end).date()
         current = datetime(start_dt.year, start_dt.month, 1).date()
         while current <= end_dt:
