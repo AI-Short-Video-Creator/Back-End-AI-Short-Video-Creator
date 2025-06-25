@@ -3,7 +3,7 @@ import uuid
 import requests
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-from moviepy.editor import ImageClip, concatenate_videoclips
+from moviepy import ImageClip, concatenate_videoclips
 from app.video.dto import VideoGenerateDTO
 from dotenv import load_dotenv
 import logging
@@ -11,7 +11,7 @@ import tempfile
 import shutil
 
 import cloudinary
-from cloudinary import CloudinaryImage
+from cloudinary import CloudinaryImage 
 import cloudinary.uploader
 import cloudinary.api
 # Configure logging
@@ -118,7 +118,7 @@ class VideoService:
                     with open(audio_temp, "wb") as f:
                         shutil.copyfileobj(response.raw, f)
                     
-                    from moviepy.editor import AudioFileClip
+                    from moviepy import AudioFileClip
                     audio = AudioFileClip(audio_temp)
                     if audio.duration < final_clip.duration:
                         audio = audio.loop(duration=final_clip.duration)

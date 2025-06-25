@@ -5,17 +5,52 @@ class ScriptGenerateDTO(BaseModel):
     """
     DTO for script generation.
     """
-    keywords: list[str] = Field(
+    keyword: str = Field(
         ...,
-        description="Keywords for script generation",
-        title="Keywords",
+        description="Keyword for script generation",
+        title="Keyword",
         max_length=100,
     )
-    topic: str = Field(
+    style: str = Field(
         ...,
-        description="Topic for script generation",
-        title="Topic",
+        description="Style for script generation",
+        title="Style",
         max_length=100,
+    )
+    language: str = Field(
+        ...,
+        description="Language for script generation",
+        title="Language",
+        max_length=100,
+    )
+    wordCount: int = Field(
+        ...,
+        description="Word count for script generation",
+        title="Word Count",
+        ge=1,
+    )
+    tone: str = Field(
+        ...,
+        description="Tone for script generation",
+        title="Tone",
+        max_length=100,
+    )
+    perspective: str = Field(
+        ...,
+        description="Perspective for script generation",
+        title="Perspective",
+        max_length=100,
+    )
+    humor: str = Field(
+        ...,
+        description="Humor level for script generation",
+        title="Humor",
+        max_length=100,
+    )
+    quotes: str = Field(
+        ...,
+        description="Whether to include quotes in the script",
+        title="Quotes",
     )
 
     class Config:
