@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from app.image.repo import insert_image
 from flask_jwt_extended import get_jwt_identity
 import re
-
+from app.file.service import FileService 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -113,9 +113,11 @@ class ImageService:
                     
                     result = response.json()
                     if "data" in result and len(result["data"]) > 0:
-                        image_url = result["data"][0]["url"]
+                        together_url = result["data"][0]["url"]
                         image_id = str(uuid.uuid4())
-                        
+                        file_service = FileService()
+                        image_url = file_service.upload_image_from_url(together_url, image_id=None)
+                        print(f"Generated image {i+1} with ID {image_id} and URL {image_url}")
                         try:
                             insert_image(
                                 file_id=image_id,
