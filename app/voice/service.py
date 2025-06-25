@@ -1,19 +1,25 @@
 import os
 import uuid
 import logging
-import base64
-from io import BytesIO
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 from flask import current_app
 from google.cloud import texttospeech
 from elevenlabs.client import ElevenLabs
-from app.voice.dto import VoiceSchema, GCTTSRequest, ElevenlabsTTSRequest
+from app.voice.dto import VoiceSchema, GCTTSRequest, VoiceCloneRequest, ElevenlabsTTSRequest
+
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET')
+)
 
 logger = logging.getLogger(__name__)
 class VoiceService:
     _instance = None
     _gctts_client = None
     _elevenlabs_client = None
-    _voice_samples_data = None
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -57,7 +63,7 @@ class VoiceService:
             self._initialize_gctts_client()
         
         try:
-            synthesis_input = texttospeech.SynthesisInput(text=dto.text)
+            synthesis_input = texttospeech.SynthesisInput(text=dto.script)
             voice = texttospeech.VoiceSelectionParams(
                 language_code=dto.language_code,
                 name=dto.voice_name
@@ -119,13 +125,13 @@ class VoiceService:
             self._elevenlabs_client = ElevenLabs(api_key=api_key)
             logger.info("Initialized ElevenLabs client successfully.")
     
-    def clone_voice(self, audio_file) -> object:
+    def clone_voice(self, dto: VoiceCloneRequest, audio_file) -> object:
         if not self._elevenlabs_client:
             self._initialize_elevenlabs_client()
 
         try:            
             clone_voice = self._elevenlabs_client.voices.ivc.create(
-                name='Clone Voice',
+                name=dto.voice_name,
                 files=[audio_file]
             )
         except Exception as e:
@@ -133,20 +139,48 @@ class VoiceService:
             raise e
         
         voice = self._elevenlabs_client.voices.get(clone_voice.voice_id)
-        return voice
+        
+        try:
+            preview_audio_path = self.elevenlabs_generate_tts(
+                ElevenlabsTTSRequest(
+                    script=dto.preview_script,
+                    voice_id=clone_voice.voice_id,
+                )
+            )['audio_path']
+        except Exception as e:
+            logger.error(f"Error generating preview for cloned voice: {e}")
+            raise e
+        
+        try:
+            cloudinary_response = cloudinary.uploader.upload(
+                preview_audio_path,
+                folder='voice_clones',
+                resource_type='video',
+                public_id=f"clone_preview_{clone_voice.voice_id}"
+            )
+            preview_url = cloudinary_response['secure_url']
+        except Exception as e:
+            logger.error(f"Error uploading preview audio to Cloudinary: {e}")
+            raise e
+        finally:
+            os.remove(preview_audio_path)
+        return {
+            "voice_id": getattr(voice, "voice_id", ""),
+            "preview_url": preview_url
+        }
     
     def elevenlabs_generate_tts(self, dto: ElevenlabsTTSRequest) -> dict:
         if not self._elevenlabs_client:
             self._initialize_elevenlabs_client()
 
-        try:
+        try:            
             settings_dict = {
                 "stability": dto.stability,
                 "speed": dto.speed
             }
             
             audio = self._elevenlabs_client.text_to_speech.convert(
-                text=dto.text,
+                text=dto.script,
                 voice_id=dto.voice_id,
                 voice_settings=settings_dict,
                 model_id="eleven_flash_v2_5",
