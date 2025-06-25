@@ -62,7 +62,7 @@ def register_blueprints(app):
     from app.auth.route import user_bp
     from app.image.route import image_bp
     from app.video.route import video_bp
-
+    from app.file.route import file_bp
 
     blue_prints = [
         (trending_bp, '/api/trending'),
@@ -70,6 +70,7 @@ def register_blueprints(app):
         (user_bp, '/api/auth'),
         (image_bp, '/api/image'),
         (video_bp, '/api/video'),
+        (file_bp, '/api/file')
 
     ]
 

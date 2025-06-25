@@ -3,6 +3,8 @@ from cloudinary import CloudinaryImage
 import cloudinary.uploader
 import cloudinary.api
 import json
+import requests
+
 from app.file.dto import UploadImageDTO, UploadVideoDTO
 class FileService:
     _instance = None
@@ -43,3 +45,19 @@ class FileService:
             return video_url
         except Exception as e:
             raise ValueError(f"Failed to upload video {video_id}: {str(e)}")
+    def upload_image_from_url(self, image_url: str, image_id: str = None) -> str:
+        """
+        Tải ảnh từ image_url và upload lên Cloudinary.
+        """
+        response = requests.get(image_url)
+        response.raise_for_status()
+        image_bytes = response.content
+
+        image_id = image_id or "from_url"
+        upload_result = cloudinary.uploader.upload(
+            image_bytes,
+            public_id=f"images/{image_id}",
+            resource_type="image",
+            folder="video_creator"
+        )
+        return upload_result["secure_url"]
