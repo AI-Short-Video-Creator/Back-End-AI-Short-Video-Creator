@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 import logging
 from pydantic import ValidationError
 from app.voice.service import VoiceService
-from app.voice.dto import VoiceListResponse, GCTTSRequest, TTSResponse, VoiceCloneResponse, ElevenlabsTTSRequest
+from app.voice.dto import VoiceListResponse, GCTTSRequest, TTSResponse, VoiceCloneRequest, VoiceCloneResponse, ElevenlabsTTSRequest
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 logger = logging.getLogger(__name__)
@@ -62,15 +62,22 @@ class VoiceController:
 
     @jwt_required()
     def create_cloned_voice(self):
-        try:
+        try:            
             audio_file = request.files.get("audio_file")
             if not audio_file:
                 return jsonify({"message": "Missing audio file"}), 400
             
-            response_data = self.service.clone_voice(audio_file)
+            voice_name = request.form.get("voice_name")
+            previrew_script = request.form.get("preview_script", "This is a preview of the cloned voice.")
+            dto = VoiceCloneRequest(
+                voice_name=voice_name,
+                preview_script=previrew_script
+            )
+            response_data = self.service.clone_voice(dto, audio_file)
             response = VoiceCloneResponse(
                 message="Voice cloned successfully.",
-                voice_id=response_data.voice_id,
+                voice_id=response_data["voice_id"],
+                preview_url=response_data["preview_url"],
             )
             return jsonify(response.model_dump()), 201
         except ValidationError as ve:
