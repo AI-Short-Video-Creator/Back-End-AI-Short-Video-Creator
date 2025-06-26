@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, root_validator
 
 class UserLoginDTO(BaseModel):
     """
@@ -13,10 +13,21 @@ class UserLoginDTO(BaseModel):
     password: str = Field(
         ...,
         description="User's password.",
-        min_length=8,
-        max_length=128,
-        examples=["MyS3cureP@ssw0rd!"]
     )
+
+    @root_validator(pre=True)
+    def validate_password(cls, values):
+        password = values.get("password")
+        if not password or len(password) < 8:
+            raise ValueError("Invalid password. It must be at least 8 characters long.")
+        return values
+    
+    @root_validator(pre=True)
+    def validate_email(cls, values):
+        email = values.get("email")
+        if not email or "@" not in email:
+            raise ValueError("Invalid email address.")
+        return values
 
     model_config = {
         "from_attributes": True,
@@ -44,6 +55,13 @@ class UserRegisterDTO(UserLoginDTO):
         strip_whitespace=True,
         examples=["John Doe"]
     )
+
+    @root_validator(pre=True)
+    def validate_fullname(cls, values):
+        fullname = values.get("fullname")
+        if not fullname or len(fullname) < 2:
+            raise ValueError("Invalid full name. It must be at least 2 characters long.")
+        return values
 
     model_config = {
         "from_attributes": True,
