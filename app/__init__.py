@@ -76,7 +76,7 @@ def register_blueprints(app):
         (image_bp, '/api/image'),
         #(video_bp, '/api/video'),
         (voice_bp, '/api/voice'),
-        (file_bp, '/api/file')
+        (file_bp, '/api/file'),
         (caption_bp, '/api/caption'),
         (youtube_bp, '/api/youtube'),
         (tiktok_bp, '/api/tiktok/'),
