@@ -5,10 +5,11 @@ from openai import OpenAI
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def fetch_captions(video_context: str):
+def fetch_captions(video_context: str, lang: str = "en"):
     prompt = (
         f"Generate a suitable title and caption for this video to share on social platforms. "
-        f"Video context: '{video_context}'. Respond in JSON with keys 'title' and 'caption'."
+        f"Video context: '{video_context}'. Respond in JSON with keys 'title' and 'caption'. "
+        f"Use language: {lang}."
     )
     try:
         response = client.chat.completions.create(
