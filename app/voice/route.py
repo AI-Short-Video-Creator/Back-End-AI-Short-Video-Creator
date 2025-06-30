@@ -48,7 +48,7 @@ class VoiceController:
                 return jsonify({"message": "Unsupported provider"}), 400
             response = TTSResponse(
                 message="Speech generated successfully.",
-                audio_path=response_data['audio_path'],
+                audio_url=response_data['audio_url'],
                 filename=response_data['filename'],
                 voice_used=response_data.get('voice_used')
             )
