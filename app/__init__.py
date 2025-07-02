@@ -67,7 +67,9 @@ def register_blueprints(app):
     from app.caption.route import caption_bp
     from app.upload_youtube.route import youtube_bp
     from app.tiktok.route import tiktok_bp
-    from app.social_video.route import social_video_bp
+    from app.social_video.route import social_video_bp    
+    from app.my_video.route import videos_bp
+    from app.workspace.route import workspace_bp
 
     blue_prints = [
         (trending_bp, '/api/trending'),
@@ -80,7 +82,9 @@ def register_blueprints(app):
         (caption_bp, '/api/caption'),
         (youtube_bp, '/api/youtube'),
         (tiktok_bp, '/api/tiktok/'),
-        (social_video_bp, '/api/social')
+        (social_video_bp, '/api/social'),
+        (videos_bp, '/api/videos'),
+        (workspace_bp, '/api/workspace'),
     ]
 
     for blueprint, url_prefix in blue_prints:
