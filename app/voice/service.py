@@ -4,7 +4,7 @@ import logging
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-from flask import current_app
+import tempfile
 from google.cloud import texttospeech
 from elevenlabs.client import ElevenLabs
 from app.voice.dto import VoiceSchema, GCTTSRequest, VoiceCloneRequest, ElevenlabsTTSRequest
@@ -101,20 +101,31 @@ class VoiceService:
             )
             
             filename = f"{uuid.uuid4()}.mp3"
-            output_path = os.path.join(current_app.config['AUDIO_UPLOAD_FOLDER'], filename)
-            
+            temp_dir = tempfile.mkdtemp()
+            output_path = os.path.join(temp_dir, filename)
             with open(output_path, "wb") as f:
                 f.write(response.audio_content)
             
-            return {
-                "message": "TTS generated successfully.",
-                "audio_path": output_path,
-                "filename": filename,
-                "voice_used": dto.voice_name
-            }
         except Exception as e:
             logger.error(f"Error generating TTS: {e}")
             raise e
+        
+        cloudinary_response = cloudinary.uploader.upload(
+            output_path,
+            folder='gctts',
+            resource_type='video',
+            public_id=f"gctts_{uuid.uuid4()}"
+        )
+        
+        # remove the local file after upload
+        os.remove(output_path)
+        
+        return {
+            "message": "TTS generated successfully.",
+            "audio_url": cloudinary_response['secure_url'],
+            "filename": filename,
+            "voice_used": dto.voice_name
+        }
     
     # ElevenLabs TTS and Voice Cloning
     def _initialize_elevenlabs_client(self):
@@ -141,33 +152,19 @@ class VoiceService:
         voice = self._elevenlabs_client.voices.get(clone_voice.voice_id)
         
         try:
-            preview_audio_path = self.elevenlabs_generate_tts(
+            preview_url = self.elevenlabs_generate_tts(
                 ElevenlabsTTSRequest(
                     script=dto.preview_script,
                     voice_id=clone_voice.voice_id,
                 )
-            )['audio_path']
+            )['audio_url']
+            return {
+                "voice_id": getattr(voice, "voice_id", ""),
+                "preview_url": preview_url
+            }
         except Exception as e:
             logger.error(f"Error generating preview for cloned voice: {e}")
             raise e
-        
-        try:
-            cloudinary_response = cloudinary.uploader.upload(
-                preview_audio_path,
-                folder='voice_clones',
-                resource_type='video',
-                public_id=f"clone_preview_{clone_voice.voice_id}"
-            )
-            preview_url = cloudinary_response['secure_url']
-        except Exception as e:
-            logger.error(f"Error uploading preview audio to Cloudinary: {e}")
-            raise e
-        finally:
-            os.remove(preview_audio_path)
-        return {
-            "voice_id": getattr(voice, "voice_id", ""),
-            "preview_url": preview_url
-        }
     
     def elevenlabs_generate_tts(self, dto: ElevenlabsTTSRequest) -> dict:
         if not self._elevenlabs_client:
@@ -189,13 +186,23 @@ class VoiceService:
             
             audio_data = b"".join([chunk for chunk in audio])
             filename = f"{uuid.uuid4()}.mp3"
-            output_path = os.path.join(current_app.config['AUDIO_UPLOAD_FOLDER'], filename)
-            
+            temp_dir = tempfile.mkdtemp()
+            output_path = os.path.join(temp_dir, filename)
             with open(output_path, "wb") as f:
                 f.write(audio_data)
+            
+            cloudinary_response = cloudinary.uploader.upload(
+                output_path,
+                folder='elevenlabs',
+                resource_type='video',
+                public_id=f"elevenlabs_{uuid.uuid4()}"
+            )
+            
+            # remove the local file after upload
+            os.remove(output_path)
                         
             return {
-                "audio_path": output_path,
+                "audio_url": cloudinary_response['secure_url'],
                 "filename": filename,
                 "voice_used": dto.voice_id
             }
