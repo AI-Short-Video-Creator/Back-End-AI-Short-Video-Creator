@@ -81,7 +81,7 @@ def register_blueprints(app):
         (caption_bp, '/api/caption'),
         (youtube_bp, '/api/youtube'),
         (tiktok_bp, '/api/tiktok/'),
-        (social_video_bp, '/api/social')
+        (social_video_bp, '/api/social'),
         (videos_bp, '/api/videos'),
     ]
 

@@ -1,11 +1,11 @@
-import openai
 import os
 import requests
+import google.generativeai as genai
 from app.script.dto import ScriptGenerateDTO
 from pytrends.request import TrendReq
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 RAPID_API_KEY = os.getenv("RAPID_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 class ScriptService:
     _instance = None
@@ -16,9 +16,8 @@ class ScriptService:
         return cls._instance
     
     def __init__(self):
-        self.llm = openai.OpenAI(
-            api_key=OPENAI_API_KEY,
-        )
+        genai.configure(api_key=GEMINI_API_KEY)
+        self.model = genai.GenerativeModel('gemini-2.5-flash')
     
     def generate_script(self, dto: ScriptGenerateDTO) -> str:
         """
@@ -62,17 +61,11 @@ class ScriptService:
             "Make it emotionally appealing, concise, and resonate with a young audience."
         )
 
-        response = self.llm.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are a creative expert in short-form video content."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.8,
-            max_tokens=300
-        )
-
-        script = response.choices[0].message.content
+        system_prompt = "You are a creative expert in short-form video content."
+        
+        response = self.model.generate_content([system_prompt, prompt])
+        
+        script = response.text
         return script
     
     def get_topics_from_wiki(self, keyword: str, limit: int = 5):

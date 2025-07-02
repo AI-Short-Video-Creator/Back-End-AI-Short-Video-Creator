@@ -6,7 +6,7 @@ flask_pymongo==3.0.1
 marshmallow==4.0.0
 python-dotenv==1.1.0
 Werkzeug>=2.3.0
-openai
+google-generativeai
 # AI model dependencies
 fastapi
 uvicorn
