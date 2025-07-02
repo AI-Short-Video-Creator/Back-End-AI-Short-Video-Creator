@@ -26,7 +26,7 @@ class WorkspaceService:
         """Create a new workspace"""
         try:
             workspace_id = str(uuid.uuid4())
-            now = datetime.now()
+            now = datetime.utcnow()
             
             image_urls_data = []
             if dto.image_urls is not None:
@@ -160,7 +160,7 @@ class WorkspaceService:
     ) -> Optional[WorkspaceResponse]:
         """Update workspace"""
         try:
-            update_data = {"updated_at": datetime.now()}
+            update_data = {"updated_at": datetime.utcnow()}
             
             if dto.name is not None:
                 update_data["name"] = dto.name
@@ -242,7 +242,7 @@ class WorkspaceService:
                 return None
             
             new_workspace_id = str(uuid.uuid4())
-            now = datetime.now()
+            now = datetime.utcnow()
             
             new_workspace = original.copy()
             new_workspace["_id"] = new_workspace_id
