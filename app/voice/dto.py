@@ -72,6 +72,6 @@ class VoiceCloneResponse(BaseModel):
 
 class TTSResponse(BaseModel):
     message: str
-    audio_path: str
+    audio_url: str
     filename: str
     voice_used: Optional[str] = None
