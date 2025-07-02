@@ -36,13 +36,29 @@ class ScriptService:
         style = data.get("style")
         language = data.get("language")
         word_count = data.get("wordCount", 100)
-        
+        tone = data.get("tone", "neutral")
+        perspective = data.get("perspective", "third")
+        humor = data.get("humor", "none")
+        quotes = data.get("quotes", "no")
+
         prompt = (
             f"Create a short, engaging script (about {word_count} words) for a social media video. "
-            "For each scene, follow this pattern: <visual description> <dialogue or narration for that scene>. "
+            "You MUST follow these formatting rules with ABSOLUTE precision: "
+            "1. Each scene MUST be structured as: <visual description> Narration: <the spoken text>. "
+            "2. The label for the spoken text MUST ALWAYS be the plain text word 'Narration:'. "
+            "3. DO NOT use any other labels like 'Dialogue', 'Narration', 'Narrator', 'Lời thoại', etc. "
+            "4. DO NOT use any markdown formatting (like **bold** or *italics*) on the 'Narration:' label and script. It must be plain text. "
+            "Here is a perfect example of the required format: "
+            "[Scene 1: A bustling city street with stylishly dressed people walking by.]\n"
+            "Narration: Fashion is more than just clothes; it's a form of expression."
             f"Main keyword: \"{keyword}\". "
             f"Style: {style}. "
             f"Language: {language}. "
+            f"Word Count: {word_count}. "
+            f"Tone: {tone}. "
+            f"Perspective: {perspective}. "
+            f"Humor: {humor}. "
+            f"Quotes: {quotes}. "
             "Make it emotionally appealing, concise, and resonate with a young audience."
         )
 
