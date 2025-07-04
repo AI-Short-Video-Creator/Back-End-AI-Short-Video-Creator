@@ -13,7 +13,7 @@ def fetch_captions(video_context: str, lang: str = "en"):
     )
     try:
         response = client.chat.completions.create(
-            model="gpt-4o",  # dùng model chính xác hơn
+            model="gpt-4o-mini",  # dùng model chính xác hơn
             messages=[
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": prompt}
