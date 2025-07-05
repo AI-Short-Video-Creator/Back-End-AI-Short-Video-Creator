@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 import logging
 from pydantic import ValidationError
 from app.voice.service import VoiceService
-from app.voice.dto import VoiceListResponse, GCTTSRequest, TTSResponse, VoiceCloneRequest, VoiceCloneResponse, ElevenlabsTTSRequest
+from app.voice.dto import VoiceListResponse, GCTTSRequest, TTSResponse, VoiceCloneRequest, VoiceCloneResponse, ElevenlabsTTSRequest, MultiTTSResponse  
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 logger = logging.getLogger(__name__)
@@ -40,21 +40,25 @@ class VoiceController:
             data = request.get_json()
             if data['provider'] == 'gctts':
                 dto = GCTTSRequest(**data)
-                response_data = self.service.gctts_generate_tts(dto)
             elif data['provider'] == 'elevenlabs':
                 dto = ElevenlabsTTSRequest(**data)
-                response_data = self.service.elevenlabs_generate_tts(dto)
             else:
                 return jsonify({"message": "Unsupported provider"}), 400
-            response = TTSResponse(
-                message="Speech generated successfully.",
-                audio_url=response_data['audio_url'],
-                filename=response_data['filename'],
-                voice_used=response_data.get('voice_used')
+            
+            response_data = self.service.generate_speech_from_scenes(dto)
+            
+            response = MultiTTSResponse(
+                message="Speech generated successfully for all scenes.",
+                total_scenes=response_data['total_scenes'],
+                voice_used=response_data['voice_used'],
+                scenes=response_data['scenes']
             )
             return jsonify(response.model_dump()), 201
         except ValidationError as ve:
             logger.error(f"Validation error: {ve}")
+            return jsonify({"message": str(ve)}), 400
+        except ValueError as ve:
+            logger.error(f"Value error: {ve}")
             return jsonify({"message": str(ve)}), 400
         except Exception as e:
             logger.error(f"Error generating speech: {e}")

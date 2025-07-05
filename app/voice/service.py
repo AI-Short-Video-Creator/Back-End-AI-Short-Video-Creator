@@ -5,6 +5,7 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 import tempfile
+import re
 from google.cloud import texttospeech
 from elevenlabs.client import ElevenLabs
 from app.voice.dto import VoiceSchema, GCTTSRequest, VoiceCloneRequest, ElevenlabsTTSRequest
@@ -20,6 +21,7 @@ class VoiceService:
     _instance = None
     _gctts_client = None
     _elevenlabs_client = None
+    NARRATION_REGEX = re.compile(r"Narration:\s*(.*?)(?=\[Scene|\Z)", re.DOTALL)
 
     def __new__(cls, *args, **kwargs):
         if not cls._instance:
@@ -57,6 +59,46 @@ class VoiceService:
         except Exception as e:
             logger.error(f"Error retrieving voice lists: {e}")
             raise e
+    
+    def _parse_script_into_narrations(self, script: str) -> list[str]:
+        """Sử dụng regex để tách kịch bản thành các đoạn narration."""
+        narrations = self.NARRATION_REGEX.findall(script)
+        return [narration.strip() for narration in narrations if narration.strip()]
+    
+    def generate_speech_from_scenes(self, dto: GCTTSRequest | ElevenlabsTTSRequest) -> dict:
+        narrations = self._parse_script_into_narrations(dto.script)
+        if not narrations:
+            raise ValueError("No valid narration found in the script.")
+
+        scene_details = []
+        voice_used = ""
+
+        for i, narration_text in enumerate(narrations):
+            logger.info(f"Generating audio for scene {i+1}/{len(narrations)}...")
+            
+            if isinstance(dto, GCTTSRequest):
+                single_dto = dto.model_copy(update={'script': narration_text})
+                audio_data = self.gctts_generate_tts(single_dto)
+                voice_used = single_dto.voice_name
+            elif isinstance(dto, ElevenlabsTTSRequest):
+                single_dto = dto.model_copy(update={'script': narration_text})
+                audio_data = self.elevenlabs_generate_tts(single_dto)
+                voice_used = single_dto.voice_id
+            else:
+                raise TypeError("Unsupported DTO type for TTS generation.")
+
+            scene_details.append({
+                "scene_index": i + 1,
+                "script": narration_text,
+                "audio_url": audio_data['audio_url'],
+                "duration": audio_data['duration'],
+            })
+
+        return {
+            "total_scenes": len(scene_details),
+            "scenes": scene_details,
+            "voice_used": voice_used
+        }
     
     def gctts_generate_tts(self, dto: GCTTSRequest) -> dict:
         if not self._gctts_client:
@@ -121,10 +163,8 @@ class VoiceService:
         os.remove(output_path)
         
         return {
-            "message": "TTS generated successfully.",
             "audio_url": cloudinary_response['secure_url'],
-            "filename": filename,
-            "voice_used": dto.voice_name
+            "duration": cloudinary_response.get('duration', 0.0)
         }
     
     # ElevenLabs TTS and Voice Cloning
@@ -203,8 +243,7 @@ class VoiceService:
                         
             return {
                 "audio_url": cloudinary_response['secure_url'],
-                "filename": filename,
-                "voice_used": dto.voice_id
+                "duration": cloudinary_response.get('duration', 0.0)
             }
         except Exception as e:
             logger.error(f"Error generating TTS with ElevenLabs: {e}")

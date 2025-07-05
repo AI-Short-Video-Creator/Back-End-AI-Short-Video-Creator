@@ -70,6 +70,18 @@ class VoiceCloneResponse(BaseModel):
     voice_id: str
     preview_url: Optional[str] = None
 
+class SceneAudioDetail(BaseModel):
+    scene_index: int
+    script: str
+    audio_url: str
+    duration: float = Field(..., description="Duration of the audio in seconds")
+
+class MultiTTSResponse(BaseModel):
+    message: str
+    total_scenes: int
+    voice_used: Optional[str] = None
+    scenes: list[SceneAudioDetail]
+
 class TTSResponse(BaseModel):
     message: str
     audio_url: str
