@@ -66,6 +66,17 @@ class ScriptGenerateDTO(BaseModel):
             validate_default=True,
         )
 
+class ScriptFormatDTO(BaseModel):
+    """
+    DTO for script formatting.
+    """
+    script: str = Field(
+        ...,
+        description="Script to format",
+        title="Script",
+        max_length=10000,
+    )
+
 class ScriptGenerateResponseDTO(BaseModel):
     """
     DTO for script generation response.

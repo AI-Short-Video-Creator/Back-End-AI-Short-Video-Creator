@@ -1,7 +1,7 @@
 import os
 import requests
 import google.generativeai as genai
-from app.script.dto import ScriptGenerateDTO
+from app.script.dto import ScriptFormatDTO, ScriptGenerateDTO
 from pytrends.request import TrendReq
 
 RAPID_API_KEY = os.getenv("RAPID_API_KEY")
@@ -68,6 +68,34 @@ class ScriptService:
         
         script = response.text
         return script
+
+    def format_script(self, dto: ScriptFormatDTO) -> str:
+        """
+        Format the script to ensure it follows the required structure using Gemini.
+        
+        Args:
+            script (str): The script to format.
+        
+        Returns:
+            str: The formatted script.
+        """
+        data = dto.model_dump()
+        prompt = (
+            "Format the following script so that it strictly follows these rules:\n"
+            "1. Each scene MUST be structured as: <visual description> Narration: <the spoken text>.\n"
+            "2. The label for the spoken text MUST ALWAYS be the plain text word 'Narration:'.\n"
+            "3. DO NOT use any other labels like 'Dialogue', 'Narration', 'Narrator', 'Lời thoại', etc.\n"
+            "4. DO NOT use any markdown formatting (like **bold** or *italics*) on the 'Narration:' label and script. It must be plain text.\n"
+            "Here is a perfect example of the required format:\n"
+            "[Scene 1: A bustling city street with stylishly dressed people walking by.]\n"
+            "Narration: Fashion is more than just clothes; it's a form of expression.\n"
+            "Format this script accordingly:\n"
+            f"{data.get('script')}\n"
+            "Ensure the script is concise, engaging, and resonates with a young audience."
+        )
+        system_prompt = "You are a creative expert in short-form video content."
+        response = self.model.generate_content([system_prompt, prompt])
+        return response.text
     
     def get_topics_from_wiki(self, keyword: str, limit: int = 5):
         """

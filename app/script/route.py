@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from app.script.service import ScriptService
-from app.script.dto import ScriptGenerateDTO, ScriptGenerateResponseDTO
+from app.script.dto import ScriptGenerateDTO, ScriptFormatDTO
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 class ScriptController:
@@ -12,6 +12,7 @@ class ScriptController:
 
     def _register_routes(self):
         self.script_bp.add_url_rule('/', view_func=self.script, methods=['POST'])
+        self.script_bp.add_url_rule('/format', view_func=self.format_script, methods=['POST'])
         self.script_bp.add_url_rule('/topics/wiki', view_func=self.get_wiki_trends, methods=['GET'])
         self.script_bp.add_url_rule('/topics/google', view_func=self.get_google_trends, methods=['GET'])
         self.script_bp.add_url_rule('/topics/youtube', view_func=self.get_youtube_trends, methods=['GET'])
@@ -25,6 +26,18 @@ class ScriptController:
 
             script = self.service.generate_script(dto)
             return jsonify({"data": script}), 200
+        except Exception as e:
+            return jsonify({"error": str(e)}), 400
+
+    @jwt_required()
+    def format_script(self):
+        """Format script route handler."""
+        try:
+            data = request.json
+            dto = ScriptFormatDTO(**data)
+
+            formatted_script = self.service.format_script(dto)
+            return jsonify({"data": formatted_script}), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 400
 
