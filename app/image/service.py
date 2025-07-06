@@ -56,29 +56,35 @@ class ImageService:
         themes = dto.themes or "cartoon"
         logger.info(f"Using theme: {themes}")
         
-        # Extract scenes and voices
-        # scene_matches = list(re.finditer(r"\*\*\[Scene\s*\d+:\s*(.*?)\]\*\*", full_script))
-        # voice_matches = list(re.finditer(r"\*\*(.*?):\*\*\s*\"(.*?)\"", full_script))
+        # Extract scenes and voices from script
+        scene_pattern = r'\[Scene\s+\d+:\s*(.*?)\]'
+        narration_pattern = r'Narration:\s*(.*?)(?=\[Scene|\Z)'
         
-        # scenes = []
-        # for scene_match, voice_match in zip(scene_matches, voice_matches):
-        #     scene_text = scene_match.group(1).strip()
-        #     voice_text = voice_match.group(2).strip()
-        #     if scene_text and voice_text:
-        #         scenes.append({"scene": scene_text, "voice": voice_text})
-                # ...existing code...
-                # Hardcode 3 scenes
-        scenes = [
-            {
-                "scene": "A bustling city street, with people wearing masks and interacting cautiously.",
-                "voice": "Narrator: \"Remember when we thought normal was just around the corner?\""
-            },
-            {
-                "scene": "Quick cuts of a young person scrolling through news headlines on their phone.",
-                "voice": "Narrator: \"Newsflash: COVID-19 is making a comeback.\""
-            },
-           
-        ]
+        scene_matches = re.findall(scene_pattern, full_script, re.DOTALL)
+        narration_matches = re.findall(narration_pattern, full_script, re.DOTALL)
+        
+        scenes = []
+        for i, (scene_text, narration_text) in enumerate(zip(scene_matches, narration_matches)):
+            scene_text = scene_text.strip()
+            narration_text = narration_text.strip()
+            if scene_text and narration_text:
+                scenes.append({
+                    "scene": scene_text,
+                    "voice": f"Narration: {narration_text}"
+                })
+        # Fallback to hardcoded scenes if extraction fails
+        if not scenes:
+            logger.warning("Failed to extract scenes from script, using fallback scenes")
+            scenes = [
+                {
+                    "scene": "A bustling city street, with people wearing masks and interacting cautiously.",
+                    "voice": "Narrator: \"Remember when we thought normal was just around the corner?\""
+                },
+                {
+                    "scene": "Quick cuts of a young person scrolling through news headlines on their phone.",
+                    "voice": "Narrator: \"Newsflash: COVID-19 is making a comeback.\""
+                }
+            ]
         # ...existing code...
         logger.info(f"Split script into {len(scenes)} scenes with voices")
         
@@ -94,7 +100,7 @@ class ImageService:
             if len(scene) < 10:
                 logger.info(f"Skipping short scene {i+1}: {scene}")
                 continue
-                
+            
             prompt = f"{scene}, {themes} style"
             payload = {
                 "model": "black-forest-labs/FLUX.1-schnell-Free",
@@ -116,8 +122,9 @@ class ImageService:
                         together_url = result["data"][0]["url"]
                         image_id = str(uuid.uuid4())
                         file_service = FileService()
-                        image_url = file_service.upload_image_from_url(together_url, image_id=None)
-                        print(f"Generated image {i+1} with ID {image_id} and URL {image_url}")
+                        image_url = file_service.upload_image_from_url(together_url, image_id=image_id)
+                        print(f"Generated image {i+1} with ID {image_id} and URL {image_url} and {together_url[:80]}")
+                        print(f"Generated image {i+1} with ID {image_id} and URL ")
                         try:
                             insert_image(
                                 file_id=image_id,
@@ -196,7 +203,8 @@ class ImageService:
         
         scene = image["scene"]
         voice = image["voice"]
-        themes = image["metadata"].get("themes", "cartoon")
+        themes = image["metadata"].get("themes")
+        print(f"Using theme: {themes}")
         prompt = f"{scene}, {themes} style"
         headers = {
             "Authorization": f"Bearer {TOGETHER_API_KEY}",
@@ -219,13 +227,17 @@ class ImageService:
                 
                 result = response.json()
                 if "data" in result and len(result["data"]) > 0:
-                    new_image_url = result["data"][0]["url"]
+                    together_url = result["data"][0]["url"]
                     new_image_id = str(uuid.uuid4())
+                    
+                    # Upload image from Together AI to Cloudinary
+                    file_service = FileService()
+                    cloudinary_image_url = file_service.upload_image_from_url(together_url, image_id=new_image_id)
                     
                     user_id = get_jwt_identity()
                     insert_image(
                         file_id=new_image_id,
-                        url=new_image_url,
+                        url=cloudinary_image_url,
                         scene=scene,
                         voice=voice,
                         owner_id=user_id,
@@ -233,10 +245,10 @@ class ImageService:
                         status="pending",
                         metadata={"themes": themes}
                     )
-                    logger.info(f"Regenerated image {new_image_id} for session {session_id}")
+                    logger.info(f"Regenerated image {new_image_id} for session {session_id} with Cloudinary URL")
                     return {
                         "image_id": new_image_id,
-                        "image_url": new_image_url,
+                        "image_url": cloudinary_image_url,
                         "scene": scene,
                         "voice": voice
                     }
