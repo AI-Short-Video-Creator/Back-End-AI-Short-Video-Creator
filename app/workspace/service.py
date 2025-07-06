@@ -33,6 +33,10 @@ class WorkspaceService:
                 for image in dto.image_urls:
                     image_urls_data.append(image.model_dump(by_alias=True))
             
+            generated_audio_data = None
+            if dto.generated_audio_path:
+                generated_audio_data = dto.generated_audio_path.model_dump(by_alias=True)
+            
             default_personal_style = {
                 "style": "informative",
                 "language": "en",
@@ -72,7 +76,7 @@ class WorkspaceService:
                 "script": dto.script,
                 "can_regenerate": dto.can_regenerate,
                 "voice_config": dto.voice_config.model_dump(by_alias=True) if dto.voice_config else default_voice_config,
-                "generated_audio_path": dto.generated_audio_path,
+                "generated_audio_path": generated_audio_data if generated_audio_data else None,
                 "image_urls": image_urls_data,
                 "session_id": dto.session_id,
                 "video_url": dto.video_url,
@@ -177,7 +181,8 @@ class WorkspaceService:
             if dto.voice_config is not None:
                 update_data["voice_config"] = dto.voice_config.model_dump(by_alias=True)
             if dto.generated_audio_path is not None:
-                update_data["generated_audio_path"] = dto.generated_audio_path
+                generated_audio_data = dto.generated_audio_path.model_dump(by_alias=True)
+                update_data["generated_audio_path"] = generated_audio_data
             if dto.image_urls is not None:
                 image_urls_data = []
                 for image in dto.image_urls:

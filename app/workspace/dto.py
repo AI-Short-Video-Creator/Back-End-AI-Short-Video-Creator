@@ -36,6 +36,20 @@ class MediaInfo(BaseModel):
     scene: str = Field(..., description="Scene description")
     voice: str = Field(..., description="Voice description")
 
+class SceneAudioDetail(BaseModel):
+    """Mô tả chi tiết audio cho một cảnh"""
+    scene_index: int
+    script: str
+    audio_url: str
+    duration: float = Field(..., description="Thời lượng của audio tính bằng giây")
+
+class MultiTTSResponse(BaseModel):
+    """Response cho việc tạo TTS theo nhiều cảnh"""
+    message: str
+    total_scenes: int
+    voice_used: Optional[str] = None
+    scenes: list[SceneAudioDetail]
+
 class WorkspaceCreateRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=255, description="Workspace name")
     description: Optional[str] = Field(None, description="Workspace description")
@@ -44,7 +58,7 @@ class WorkspaceCreateRequest(BaseModel):
     script: Optional[str] = Field("", description="Generated script")
     can_regenerate: bool = Field(True, alias="canRegenerate")
     voice_config: Optional[VoiceConfig] = Field(None, alias="voiceConfig")
-    generated_audio_path: Optional[str] = Field(None, alias="generatedAudioPath")
+    generated_audio_path: Optional[MultiTTSResponse] = Field(None, alias="generatedAudioPath")
     image_urls: List[MediaInfo] = Field(default_factory=list, alias="imageUrls")
     session_id: Optional[str] = Field(None, alias="sessionId")
     video_url: Optional[str] = Field(None, alias="videoUrl")
@@ -60,7 +74,7 @@ class WorkspaceUpdateRequest(BaseModel):
     script: Optional[str] = None
     can_regenerate: Optional[bool] = Field(None, alias="canRegenerate")
     voice_config: Optional[VoiceConfig] = Field(None, alias="voiceConfig")
-    generated_audio_path: Optional[str] = Field(None, alias="generatedAudioPath")
+    generated_audio_path: Optional[MultiTTSResponse] = Field(None, alias="generatedAudioPath")
     image_urls: Optional[List[MediaInfo]] = Field(None, alias="imageUrls")
     session_id: Optional[str] = Field(None, alias="sessionId")
     video_url: Optional[str] = Field(None, alias="videoUrl")
@@ -81,7 +95,7 @@ class WorkspaceResponse(BaseModel):
     script: Optional[str]
     can_regenerate: bool = Field(..., alias="canRegenerate")
     voice_config: VoiceConfig = Field(..., alias="voiceConfig")
-    generated_audio_path: Optional[str] = Field(None, alias="generatedAudioPath")
+    generated_audio_path: Optional[MultiTTSResponse] = Field(None, alias="generatedAudioPath")
     image_urls: List[MediaInfo] = Field(..., alias="imageUrls")
     session_id: Optional[str] = Field(None, alias="sessionId")
     video_url: Optional[str] = Field(None, alias="videoUrl")
