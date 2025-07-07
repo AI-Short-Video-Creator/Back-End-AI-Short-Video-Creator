@@ -1,6 +1,6 @@
 from datetime import datetime
 import uuid
-from app.my_video.repo import get_videos_by_owner, insert_video, delete_video
+from app.my_video.repo import get_videos_by_owner, insert_video, delete_video, update_video
 from app.file.service import FileService
 
 class VideosService:
@@ -69,4 +69,36 @@ class VideosService:
             "thumbnail": thumbnail_url if thumbnail else None,
             "created_at": datetime.utcnow().isoformat(),
             "status": "completed"
+        }
+
+    def update_video(self, id: str, title: str = None, thumbnail_file=None):
+        """
+        Update video title and/or thumbnail.
+        
+        Args:
+            id: ID of the video to be updated.
+            title: New title for the video (optional).
+            thumbnail_file: New thumbnail file to upload (optional).
+        
+        Returns:
+            Updated video information.
+        """
+        thumbnail_url = None
+        
+        # Upload new thumbnail if provided
+        if thumbnail_file:
+            thumbnail_uuid = uuid.uuid4()
+            thumbnail_url = self.file_service.uploadImages(thumbnail_file.stream, str(thumbnail_uuid))
+        
+        # Update video in database
+        updated_video = update_video(id, title, thumbnail_url)
+        
+        return {
+            "video_id": str(updated_video["_id"]),
+            "owner_id": updated_video["owner_id"],
+            "video_path": updated_video["video_path"],
+            "title": updated_video["title"],
+            "thumbnail": updated_video["thumbnail"],
+            "created_at": updated_video["created_at"].isoformat() if hasattr(updated_video["created_at"], 'isoformat') else updated_video["created_at"],
+            "status": updated_video["status"]
         }

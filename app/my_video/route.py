@@ -16,6 +16,7 @@ class VideoController:
         self.video_bp.add_url_rule('/', view_func=self.get_videos, methods=['GET'])
         self.video_bp.add_url_rule('/upload', view_func=self.upload_video, methods=['POST'])
         self.video_bp.add_url_rule('/<string:id>', view_func=self.delete_video, methods=['DELETE'])
+        self.video_bp.add_url_rule('/<string:id>', view_func=self.update_video, methods=['PUT'])
 
     @jwt_required()
     def get_videos(self):
@@ -71,6 +72,29 @@ class VideoController:
                 return jsonify({"message": "Video deleted successfully"}), 200
             else:
                 return jsonify({"error": "Video not found"}), 404
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+    @jwt_required()
+    def update_video(self, id: str):
+        """
+        Update a video's title and/or thumbnail.
+        
+        Args:
+            id (str): The ID of the video to update.
+        
+        Returns:
+            JSON response with updated video information.
+        """
+        try:
+            title = request.form.get('title')
+            thumbnail = request.files.get('thumbnail')
+            
+            if not title and not thumbnail:
+                return jsonify({"error": "No title or thumbnail provided"}), 400
+            
+            updated_video = self.service.update_video(id, title, thumbnail)
+            return jsonify(updated_video), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
