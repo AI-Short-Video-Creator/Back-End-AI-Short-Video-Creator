@@ -35,15 +35,21 @@ class FileController:
         # Expect multipart/form-data with 'video' file
         if 'video' not in request.files:
             return jsonify({"error": "Missing video file"}), 400
+        
         file = request.files['video']
         video_bytes = file.read()
+        
+        # Get optional title and thumbnail from form data
+        title = request.form.get('title', None)
+        thumbnail = request.form.get('thumbnail', None)
+        
         # Generate unique ID for video
         video_id = uuid.uuid4().hex
         try:
             url = self.service.uploadVideo(video_bytes, video_id)
-            # Insert video metadata into MongoDB
-            insert_video(video_id or '', url, get_jwt_identity() , datetime.utcnow(), 'completed')
-            return jsonify({"video_url": url}), 200
+            # Insert video metadata into MongoDB with title and thumbnail
+            insert_video(video_id or '', url, get_jwt_identity(), datetime.utcnow(), 'completed', title, thumbnail)
+            return jsonify({"video_url": url, "video_id": video_id, "title": title, "thumbnail": thumbnail}), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 500
     def upload_image_from_url(self):
