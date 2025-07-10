@@ -44,11 +44,13 @@ class ScriptService:
         prompt = (
             f"Create a short, engaging script (about {word_count} words) for a social media video. "
             "You MUST follow these formatting rules with ABSOLUTE precision: "
-            "1. Each scene MUST be structured as: <visual description> Narration: <the spoken text>. "
+            "1. Each scene MUST be structured as: [Scene X: <visual description>] Narration: <the spoken text>. "
             "2. The label for the spoken text MUST ALWAYS be the plain text word 'Narration:'. "
             "3. DO NOT use any other labels like 'Dialogue', 'Narration', 'Narrator', 'Lời thoại', etc. "
-            "4. DO NOT use any markdown formatting (like **bold** or *italics*) on the 'Narration:' label and script. It must be plain text. "
-            "5. Each scene can have MULTIPLE sentences in the 'Narration:', not just one. Keep the narration concise but impactful."
+            "4. The visual description MUST ALWAYS start with the plain text label '[Scene X: ...]' — the word 'Scene' must be in English, not translated, and always enclosed in square brackets []."
+            "5. DO NOT use any other labels like 'Visual', 'Description', 'Cảnh', etc. "
+            "6. DO NOT use any markdown formatting (like **bold** or *italics*) on the 'Narration:' label and script. It must be plain text. "
+            "7. Each scene can have MULTIPLE sentences in the 'Narration:', not just one. Keep the narration concise but impactful."
             "Here is a perfect example of the required format: "
             "[Scene 1: A bustling city street with stylishly dressed people walking by.]\n"
             "Narration: Fashion is more than just clothes; it's a form of expression. It's how we tell the world who we are, without saying a word."
@@ -83,12 +85,14 @@ class ScriptService:
         data = dto.model_dump()
         prompt = (
             "Format the following script so that it strictly follows these rules:\n"
-            "1. Each scene MUST be structured as: <visual description> Narration: <the spoken text>.\n"
-            "2. The label for the spoken text MUST ALWAYS be the plain text word 'Narration:'.\n"
-            "3. DO NOT use any other labels like 'Dialogue', 'Narration', 'Narrator', 'Lời thoại', etc.\n"
-            "4. DO NOT use any markdown formatting (like **bold** or *italics*) on the 'Narration:' label and script. It must be plain text.\n"
-            "5. Each scene can have MULTIPLE sentences in the 'Narration:', not just one. Keep the narration concise but impactful."
-            "Here is a perfect example of the required format:\n"
+            "1. Each scene MUST be structured as: [Scene X: <visual description>] Narration: <the spoken text>. "
+            "2. The label for the spoken text MUST ALWAYS be the plain text word 'Narration:'. "
+            "3. DO NOT use any other labels like 'Dialogue', 'Narration', 'Narrator', 'Lời thoại', etc. "
+            "4. The visual description MUST ALWAYS start with the plain text label '[Scene X: ...]' — the word 'Scene' must be in English, not translated, and always enclosed in square brackets []."
+            "5. DO NOT use any other labels like 'Visual', 'Description', 'Cảnh', etc. "
+            "6. DO NOT use any markdown formatting (like **bold** or *italics*) on the 'Narration:' label and script. It must be plain text. "
+            "7. Each scene can have MULTIPLE sentences in the 'Narration:', not just one. Keep the narration concise but impactful."
+            "Here is a perfect example of the required format: "
             "[Scene 1: A bustling city street with stylishly dressed people walking by.]\n"
             "Narration: Fashion is more than just clothes; it's a form of expression. It's how we tell the world who we are, without saying a word."
             "Format this script accordingly:\n"
@@ -153,4 +157,3 @@ class ScriptService:
         data = response.json()
         topics = [item["snippet"]["title"] for item in data.get("items", [])]
         return topics[:limit]
-    
