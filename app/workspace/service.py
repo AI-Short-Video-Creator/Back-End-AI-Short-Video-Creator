@@ -306,6 +306,7 @@ class WorkspaceService:
             name=workspace_doc["name"],
             description=workspace_doc.get("description"),
             thumbnail=workspace_doc.get("thumbnail"),
+            thumbnailUrl=workspace_doc.get("thumbnail_url"),
             keyword=workspace_doc["keyword"],
             currentStep=workspace_doc["current_step"],
             totalSteps=workspace_doc["total_steps"],

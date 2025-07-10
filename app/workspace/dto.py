@@ -117,6 +117,7 @@ class WorkspaceListItem(BaseModel):
     name: str
     description: Optional[str]
     thumbnail: Optional[str]
+    thumbnail_url: Optional[str] = Field(None, alias="thumbnailUrl")
     keyword: str
     current_step: int = Field(..., alias="currentStep")
     total_steps: int = Field(..., alias="totalSteps")
