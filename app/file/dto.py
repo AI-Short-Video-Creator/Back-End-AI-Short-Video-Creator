@@ -29,13 +29,25 @@ class UploadImageDTO(BaseModel):
 
 class UploadVideoDTO(BaseModel):
     """
-    DTO for uploading images.
+    DTO for uploading video with metadata.
     """
-    images: str = Field(
+    video_path: str = Field(
         ...,
         description="video path to upload",
         title="video path and id",
         max_length=100,
+    )
+    title: str = Field(
+        None,
+        description="Title of the video",
+        title="Video Title",
+        max_length=255,
+    )
+    thumbnail: str = Field(
+        None,
+        description="Thumbnail URL of the video",
+        title="Video Thumbnail",
+        max_length=500,
     )
 
     class Config:

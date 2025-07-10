@@ -80,6 +80,8 @@ class WorkspaceService:
                 "image_urls": image_urls_data,
                 "session_id": dto.session_id,
                 "video_url": dto.video_url,
+                "video_title": dto.video_title,
+                "thumbnail_url": dto.thumbnail_url,
                 "total_steps": dto.total_steps,
                 "current_step": dto.current_step,
                 "is_completed": dto.is_completed,
@@ -195,6 +197,10 @@ class WorkspaceService:
                 update_data["session_id"] = dto.session_id
             if dto.video_url is not None:
                 update_data["video_url"] = dto.video_url
+            if dto.video_title is not None:
+                update_data["video_title"] = dto.video_title
+            if dto.thumbnail_url is not None:
+                update_data["thumbnail_url"] = dto.thumbnail_url
             if dto.total_steps is not None:
                 update_data["total_steps"] = dto.total_steps
             if dto.current_step is not None:
@@ -283,6 +289,8 @@ class WorkspaceService:
             imageUrls=workspace_doc.get("image_urls", []),
             sessionId=workspace_doc.get("session_id"),
             videoUrl=workspace_doc.get("video_url"),
+            videoTitle=workspace_doc.get("video_title"),
+            thumbnailUrl=workspace_doc.get("thumbnail_url"),
             totalSteps=workspace_doc["total_steps"],
             currentStep=workspace_doc["current_step"],
             isCompleted=workspace_doc["is_completed"],
