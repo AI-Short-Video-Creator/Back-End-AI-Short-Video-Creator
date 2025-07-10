@@ -1,4 +1,5 @@
 import os
+import ast
 import requests
 import google.generativeai as genai
 from app.script.dto import ScriptFormatDTO, ScriptGenerateDTO
@@ -43,11 +44,13 @@ class ScriptService:
         prompt = (
             f"Create a short, engaging script (about {word_count} words) for a social media video. "
             "You MUST follow these formatting rules with ABSOLUTE precision: "
-            "1. Each scene MUST be structured as: <visual description> Narration: <the spoken text>. "
+            "1. Each scene MUST be structured as: [Scene X: <visual description>] Narration: <the spoken text>. "
             "2. The label for the spoken text MUST ALWAYS be the plain text word 'Narration:'. "
             "3. DO NOT use any other labels like 'Dialogue', 'Narration', 'Narrator', 'Lời thoại', etc. "
-            "4. DO NOT use any markdown formatting (like **bold** or *italics*) on the 'Narration:' label and script. It must be plain text. "
-            "5. Each scene can have MULTIPLE sentences in the 'Narration:', not just one. Keep the narration concise but impactful."
+            "4. The visual description MUST ALWAYS start with the plain text label '[Scene X: ...]' — the word 'Scene' must be in English, not translated, and always enclosed in square brackets []."
+            "5. DO NOT use any other labels like 'Visual', 'Description', 'Cảnh', etc. "
+            "6. DO NOT use any markdown formatting (like **bold** or *italics*) on the 'Narration:' label and script. It must be plain text. "
+            "7. Each scene can have MULTIPLE sentences in the 'Narration:', not just one. Keep the narration concise but impactful."
             "Here is a perfect example of the required format: "
             "[Scene 1: A bustling city street with stylishly dressed people walking by.]\n"
             "Narration: Fashion is more than just clothes; it's a form of expression. It's how we tell the world who we are, without saying a word."
@@ -138,20 +141,17 @@ class ScriptService:
         return [phrase.capitalize() for phrase in phrases]
 
     def get_topics_from_youtube(self, keyword: str, limit: int) -> list:
-        url = f"https://yt-api.p.rapidapi.com/suggest_queries?query={keyword}"
-        headers = {
-            "X-RapidAPI-Key": RAPID_API_KEY,
-            "X-RapidAPI-Host": "yt-api.p.rapidapi.com"
+        GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+        url = "https://www.googleapis.com/youtube/v3/search"
+        params = {
+            "part": "snippet",
+            "q": keyword,
+            "type": "video",
+            "maxResults": limit,
+            "key": GOOGLE_API_KEY
         }
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, params=params)
         response.raise_for_status()
         data = response.json()
-        suggestions = data.get("suggestions", [])
-        phrases = []
-        for item in suggestions:
-            if isinstance(item, dict) and "phrase" in item:
-                phrases.append(item["phrase"])
-            elif isinstance(item, str):
-                phrases.append(item)
-        phrases = phrases[:limit]
-        return [phrase.capitalize() for phrase in phrases]
+        topics = [item["snippet"]["title"] for item in data.get("items", [])]
+        return topics[:limit]
