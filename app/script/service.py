@@ -1,4 +1,5 @@
 import os
+import ast
 import requests
 import google.generativeai as genai
 from app.script.dto import ScriptFormatDTO, ScriptGenerateDTO
@@ -136,20 +137,29 @@ class ScriptService:
         return [phrase.capitalize() for phrase in phrases]
 
     def get_topics_from_youtube(self, keyword: str, limit: int) -> list:
-        url = f"https://yt-api.p.rapidapi.com/suggest_queries?query={keyword}"
-        headers = {
-            "X-RapidAPI-Key": RAPID_API_KEY,
-            "X-RapidAPI-Host": "yt-api.p.rapidapi.com"
-        }
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-        data = response.json()
-        suggestions = data.get("suggestions", [])
-        phrases = []
-        for item in suggestions:
-            if isinstance(item, dict) and "phrase" in item:
-                phrases.append(item["phrase"])
-            elif isinstance(item, str):
-                phrases.append(item)
-        phrases = phrases[:limit]
-        return [phrase.capitalize() for phrase in phrases]
+        """
+        Use Gemini to generate trending YouTube keyword suggestions based on the input keyword.
+
+        Args:
+            keyword (str): The base keyword to generate suggestions for.
+            limit (int): The maximum number of suggestions to return.
+
+        Returns:
+            list: List of trending keyword suggestions.
+        """
+        prompt = (
+            f"Generate exactly {limit} trending YouTube search keywords related to \"{keyword}\". "
+            "Format your response as a valid Python list of strings like this: ['keyword 1', 'keyword 2', 'keyword 3']. "
+            "Do not include any explanations, numbering, or additional text. "
+            "Only return the Python list itself with NO formatting, markdown, or additional characters."
+        )
+        system_prompt = "You are an expert in YouTube SEO and keyword research. Your task is to return trending keywords in a valid Python list format."
+        response = self.model.generate_content([system_prompt, prompt])
+        try:
+            suggestions = ast.literal_eval(response.text)
+            if isinstance(suggestions, list):
+                return [str(phrase).capitalize() for phrase in suggestions][:limit]
+        except Exception:
+            lines = [line.strip().capitalize() for line in response.text.splitlines() if line.strip()]
+            return lines[:limit]
+        return []
