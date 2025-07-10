@@ -139,29 +139,17 @@ class ScriptService:
         return [phrase.capitalize() for phrase in phrases]
 
     def get_topics_from_youtube(self, keyword: str, limit: int) -> list:
-        """
-        Use Gemini to generate trending YouTube keyword suggestions based on the input keyword.
-
-        Args:
-            keyword (str): The base keyword to generate suggestions for.
-            limit (int): The maximum number of suggestions to return.
-
-        Returns:
-            list: List of trending keyword suggestions.
-        """
-        prompt = (
-            f"Generate exactly {limit} trending YouTube search keywords related to \"{keyword}\". "
-            "Format your response as a valid Python list of strings like this: ['keyword 1', 'keyword 2', 'keyword 3']. "
-            "Do not include any explanations, numbering, or additional text. "
-            "Only return the Python list itself with NO formatting, markdown, or additional characters."
-        )
-        system_prompt = "You are an expert in YouTube SEO and keyword research. Your task is to return trending keywords in a valid Python list format."
-        response = self.model.generate_content([system_prompt, prompt])
-        try:
-            suggestions = ast.literal_eval(response.text)
-            if isinstance(suggestions, list):
-                return [str(phrase).capitalize() for phrase in suggestions][:limit]
-        except Exception:
-            lines = [line.strip().capitalize() for line in response.text.splitlines() if line.strip()]
-            return lines[:limit]
-        return []
+        GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+        url = "https://www.googleapis.com/youtube/v3/search"
+        params = {
+            "part": "snippet",
+            "q": keyword,
+            "type": "video",
+            "maxResults": limit,
+            "key": GOOGLE_API_KEY
+        }
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        data = response.json()
+        topics = [item["snippet"]["title"] for item in data.get("items", [])]
+        return topics[:limit]
