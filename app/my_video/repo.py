@@ -59,3 +59,39 @@ def delete_video(id: str):
         return True
     except Exception as e:
         raise Exception(f"Failed to delete video from MongoDB: {str(e)}")
+
+def update_video(id: str, title: str = None, thumbnail: str = None):
+    """
+    Update a video document in the MongoDB videos collection.
+    
+    Args:
+        id: Unique identifier for the video to be updated.
+        title: New title for the video (optional).
+        thumbnail: New thumbnail URL for the video (optional).
+    
+    Returns:
+        Updated video document.
+    """
+    try:
+        update_data = {}
+        if title is not None:
+            update_data["title"] = title
+        if thumbnail is not None:
+            update_data["thumbnail"] = thumbnail
+        
+        if not update_data:
+            raise Exception("No update data provided")
+        
+        result = mongo.db.videos.update_one(
+            {"_id": ObjectId(id)},
+            {"$set": update_data}
+        )
+        
+        if result.matched_count == 0:
+            raise Exception(f"No video found with ID: {id}")
+        
+        # Return the updated document
+        updated_video = mongo.db.videos.find_one({"_id": ObjectId(id)})
+        return updated_video
+    except Exception as e:
+        raise Exception(f"Failed to update video in MongoDB: {str(e)}")
